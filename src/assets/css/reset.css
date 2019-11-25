@@ -1,0 +1,137 @@
+*{
+    margin: 0;
+    padding: 0;
+  }
+  html,body{
+    height: 100%;
+  }
+  body{
+    font-size: .7rem;
+    color: #000;
+  }
+  #app{
+    height: 100%;
+  }
+  a{
+    text-decoration: none;
+    color: #999;
+    font-size: .8rem;
+  }
+  .contents{
+    height: calc( 100% - 90px);
+   
+  }
+  .fl{
+    float: left;
+  }
+  .fr{
+    float: right;
+  }
+  .cl{
+    clear: both;
+  }
+  .wrap{
+    position: relative;
+    height: 100%;
+  }
+  .block{
+    background: #fff;
+  }
+  ul{
+    list-style: none;
+  }
+  input{
+    border: none;
+    outline: none;
+  }
+  input::-webkit-input-placeholder,textarea::-webkit-input-placeholder {
+    color: #ccc;
+  }
+  button{
+    background: transparent;
+    display: block;
+    border: none;
+    outline: none;
+    text-align: center;
+  }
+  img{
+    display: inline-block;
+    width: 100%;
+    margin: 0 auto;
+    vertical-align: middle;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
+  .bounce-enter-active {
+    animation: bounce-in .3s;
+  }
+  .bounce-leave-active {
+    animation: bounce-in .3s reverse;
+  }
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+/*模态框*/
+.error-block{
+	position: fixed;
+	width: 8rem;
+	background: rgba(0, 0, 0, 0.5);
+	top:60%;
+	left: 50%;
+	margin-left: -4.5rem;
+	padding: .5rem;
+	text-align: center;
+	border-radius:5px;
+	color: #fafafa; 
+	z-index: 1000;
+	opacity: 0;
+	transition:.3s;
+}
+ 
+.swiper-pagination-bullet{
+  background: #fff!important;
+  opacity: 1 !important;
+}
+.swiper-pagination-bullet-active{
+  background: #ff0000 !important;
+  width: 16px !important;
+  border-radius: 4px !important;
+}
+
+/*暂无数据*/
+.none-data{
+  text-align: center;
+  color: #ccc;
+  line-height: 3rem;
+  font-size: .8rem;
+}
+.btn{
+  width: 12.5rem;
+  height: 2rem;
+  text-align: center;
+  color: #fff;
+  line-height: 2rem;
+  border-radius: 1rem;
+  background: #ff0000;
+  font-size: .8rem;
+}
+
+[v-cloak] {
+  display: none!important;
+}
+
+.btnGray{
+  background: #f197a4;
+}
