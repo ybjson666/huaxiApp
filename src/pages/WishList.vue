@@ -33,13 +33,14 @@
                                 <img src="../assets/images/wish.png" alt="">
                                 <span>{{item.title}}</span>
                             </p>
-                            <div>提交时间：<span>{{item.starttime}}</span></div>
+                            <div>提交时间：<span>{{item.subdate}}</span></div>
                             <span class="type-tags orange" v-if="item.state=='2'">进行中</span>
                             <span class="type-tags gray" v-if="item.state=='5'">已完成</span>
                         </div>
                     </li>
                 </ul>
             </Scroller>
+            <Loading v-show="isLoading"/>
             <p class="none-data" v-if="!wishList.length">暂无数据</p>
         </div>
     </div>
@@ -51,6 +52,7 @@ import Scroller from '@/components/Scroller';
 import HeadBar from '@/components/HeadBar'
 import { toggleModal,pageSize } from '../utils/tools';
 import { mapState,mapActions } from 'vuex'
+import Loading from '@/components/Loading'
 export default {
 name:'wishList',
   data () {
@@ -59,6 +61,7 @@ name:'wishList',
         hasData:false,
         isFresh:false,
         isShowUp:true,
+        isLoading:false,
         isPullUpLoading:false,
         isPullDownLoading:false,
         pullUpMsg:"上拉加载更多",
@@ -85,7 +88,8 @@ name:'wishList',
 
   components: {
     Scroller,
-    HeadBar
+    HeadBar,
+    Loading
   },
 
   computed:{
@@ -94,19 +98,24 @@ name:'wishList',
   created(){
       this.fetchData();
   },
-  mounted(){},
-
   methods: {
     ...mapActions('wish',['req_Wish']),
     fetchData(){
-        this.req_Wish([{isMine:this.isMine,isHomePage:this.isHomePage,state:this.curType,pageSize,pageNo:this.pageNo},false,(data=>{
-          if(data.state===200){
-              this.$nextTick(()=>{
-                this.pageNo++;
-                this.hasData=this.wishList.length>pageSize?true:false; 
-            })
+        this.isLoading=true;
+        this.req_Wish([{isMine:this.isMine,isHomePage:this.isHomePage,state:this.curType,pageSize,pageNo:this.pageNo},true,(data=>{
+            if(data.state===200){
+                if(data.data&&data.data.length){
+                    this.pageNo++;
+                }
+                this.$nextTick(()=>{
+                    setTimeout(()=>{
+                        this.hasData=this.wishList.length>pageSize?true:false;
+                        this.isLoading=false; 
+                    },500) 
+                })
           }else{
-              toggleModal(data.message)
+              toggleModal(data.message);
+              this.isLoading=false; 
           }
       })])
     },
@@ -126,7 +135,6 @@ name:'wishList',
         this.pageNo=1;
         this.req_Wish([{isMine:this.isMine,isHomePage:this.isHomePage,state:this.curType,pageSize,pageNo:this.pageNo},true,(data=>{
             this.isFresh=true;
-            console.log(111)
             if(data.state===200){
                 this.pageNo++;
                 this.$nextTick(()=>{
@@ -170,6 +178,7 @@ name:'wishList',
 <style lang='scss' scoped>
 .wishList-container{
     height: 100%;
+    background: #f0f0f0;
     .type-bar{
         height: 2rem;
         margin-bottom: .8rem;
@@ -194,7 +203,6 @@ name:'wishList',
     }
     .wishList-contents{
         height: calc(100% - 4rem);
-        background: #f0f0f0;
         .wishList-wraper{
             height: 100%;
             position: relative;

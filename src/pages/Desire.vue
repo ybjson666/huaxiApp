@@ -59,6 +59,7 @@
                     <div class="seek-more" @click="seekMore('source')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""/></span></div> 
                 </div>
             </div>
+            <Loading v-show="isLoading"/>
         </div>
     </div>
 </template>
@@ -67,6 +68,7 @@
 import HeadBar from '@/components/HeadBar'
 import Navgitor from '@/components/Navgitor'
 import Captions from '@/components/Captions'
+import Loading from '@/components/Loading'
 import { mapActions,mapState } from 'vuex'
 import { toggleModal } from '../utils/tools'
 export default {
@@ -74,6 +76,7 @@ name:'desire',
   data () {
     return {
         showBack:false,
+        isLoading:true,
         dataSource:[
             {
                 icon:require('../assets/images/release.png'),
@@ -121,10 +124,12 @@ name:'desire',
   components: {
       HeadBar,
       Navgitor,
-      Captions
+      Captions,
+      Loading
   },
   created(){
       this.req_Wish([{isHomePage:'Y',state:0,pageNo:1,pageSize:1},true,(data=>{
+          this.isLoading=false;
           if(data.state!==200){
               toggleModal(data.message);
           }

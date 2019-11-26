@@ -77,6 +77,7 @@
           </div>
            
         </div>
+        <Loading v-show="isLoading"/>
     </div>
   </div>
 </template>
@@ -84,6 +85,7 @@
 <script>
 import HeadBar from '@/components/HeadBar'
 import Navgitor from '@/components/Navgitor'
+import Loading from '@/components/Loading'
 import Captions from '@/components/Captions'
 import { toggleModal } from '../utils/tools';
 import { mapActions,mapState } from 'vuex'
@@ -92,6 +94,7 @@ name:'hunger',
   data () {
     return {
       showBack:false,
+      isLoading:true,
       dataSource:[
         {
           icon:require('../assets/images/recruit.png'),
@@ -133,7 +136,8 @@ name:'hunger',
   components: {
     HeadBar,
     Navgitor,
-    Captions
+    Captions,
+    Loading
   },
   computed:{
     ...mapState('volunteer',{
@@ -142,6 +146,7 @@ name:'hunger',
   },
   created(){
     this.req_Vots([{isAll:'N',state:0,areaId:'N'},true,data=>{
+      this.isLoading=false;
       if(data.state!==200){
         toggleModal(data.message)
       }

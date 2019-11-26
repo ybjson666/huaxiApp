@@ -71,14 +71,6 @@ name:'sourceInfo',
   data () {
     return {
         wishId:"",
-        // wish:{
-        //     pic:require('../assets/images/picture6.png'),
-        //     title:"流浪动物救助活动",
-        //     pub_time:"2019-10-25 09:30:21",
-        //     type:"1",
-        //     content:`当你看到一只小狗或小猫被遗弃路边，说着流浪街头，你必须记录的是，当你看到一只小狗或小猫被遗弃路边，
-        //     说着流浪街头，你必须记录的是当你看到一只小狗或小猫被遗弃路边，说着流浪街头，你必须记录的是`
-        // },
         hungerList:[
         {
           id:"001",

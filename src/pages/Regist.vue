@@ -36,6 +36,9 @@
                 <input type="text" class="row-input" placeholder="请在此输入验证码" v-model="verify" oninput = "value=value.replace(/[^\d]/g,'')">
                 <button class="very-code" @click="getCode" :disabled="isuse">{{codeTxt}}</button>
             </div>
+            <div class="row">
+                <p class="info"><span @click="goLogin">已有账号？</span></p>
+            </div>
             <button class="regist-btn btn" @click="registing">注册</button>
           </div>
       </div>
@@ -77,7 +80,7 @@ name:'regist',
               toggleModal("请输入密码");
               return;
           }if(!reg_pwd.test(password)){
-              toggleModal("格式错误密码");
+              toggleModal("密码格式错误");
               return;
           }else if(!phone){
               toggleModal("请输入电话号码");
@@ -130,6 +133,9 @@ name:'regist',
             },500);
 
         })
+      },
+      goLogin(){
+          this.$router.replace('/login');
       }
   }
 }
@@ -155,6 +161,13 @@ name:'regist',
                     color: #333;
                     font-size: .8rem;
                     margin-bottom: .8rem;
+                }
+                .info{
+                    text-align: right;
+                    color: #ff0000;
+                    span{
+                        text-decoration: underline;
+                    }
                 }
                 .row-input{
                     line-height: 1.25rem;

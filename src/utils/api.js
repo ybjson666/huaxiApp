@@ -66,11 +66,44 @@ export const pubWishs=async (data)=>{
 export const getWishInfo=async (data)=>{
     return $post(`/wish/api/info`,data)
 }
+/*取消心愿*/
+export const cancelWish=async (data)=>{
+    return $post(`/wish/api/cancelWish`,data)
+}
 /*获取志愿者活动列表*/
 export const getVots=async (data)=>{
     return $post(`/activityRecruit/api/list`,data)
 }
 /*获取志愿活动详情*/
-export const getActvInfo=async (id)=>{
-    return $get(`/activityRecruit/api/info?id=${id}`)
+export const getActvInfo=async (id,cumId)=>{
+    return $get(`/activityRecruit/api/info?id=${id}&customerId=${cumId}`)
+}
+/*志愿活动报名*/
+export const apply=async (data)=>{
+    return $post(`/activityRecruit/api/enter`,data)
+}
+/*取消活动报名*/
+export const cancelApply=async (data)=>{
+    return $post(`/customer/api/cancelApply`,data)
+}
+/*签到列表*/
+export const signList=async (data)=>{
+    return $post(`/activityRecruit/api/personalCenterActivity`,data)
+}
+/*签到功能*/
+export const sign=async (data)=>{
+    return $post(`/activityRecruit/api/sign`,data)
+}
+/*签退功能*/
+export const signOut=async (data)=>{
+    return $post(`/activityRecruit/api/signOut`,data)
+}
+/*申请成为志愿者*/
+export const applyVolun=async (data)=>{
+    return $post(`/customer/api/applyVolunteer`,data)
+}
+
+/*个人中心我的活动*/
+export const actvList=async (data)=>{
+    return $post(`/activityRecruit/api/myActivity`,data)
 }

@@ -27,30 +27,30 @@
                         <div class="rows">
                             <div class="row-icon"><img src="../assets/images/activity_time.png" alt=""></div>
                             <div class="row-info">
-                                <p class="row-line">招募开始：{{actvInfo.checkstarttime}}</p>
-                                <p class="row-line">招募结束：{{actvInfo.recruit_end}}</p>
+                                <p class="row-line">招募开始：{{actvInfo.recruitstarttime}}</p>
+                                <p class="row-line">招募结束：{{actvInfo.recruitendtime}}</p>
                                 <p class="row-line">活动开始：{{actvInfo.actv_start}}</p>
                                 <p class="row-line">活动结束：{{actvInfo.actv_end}}</p>
                             </div>
                         </div>
-                        <!-- <div class="rows">
+                        <div class="rows">
                             <div class="row-icon"><img src="../assets/images/activity_type.png" alt=""></div>
                             <div class="row-info">
-                                <p class="row-line">{{actvInfo.sverice_type}}</p>
+                                <p class="row-line">{{servAreaName}}</p>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="rows">
                             <div class="row-icon"><img src="../assets/images/activity_number.png" alt=""></div>
                             <div class="row-info">
                                 <p class="row-line">{{actvInfo.hascount}} / {{actvInfo.recruitcount}} 人</p>
                             </div>
                         </div>
-                        <div class="rows">
+                        <!-- <div class="rows">
                             <div class="row-icon"><img src="../assets/images/activity_location.png" alt=""></div>
                             <div class="row-info">
                                 <p class="row-line">{{actvInfo.address}}</p>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="section section-two block">
@@ -60,42 +60,75 @@
                     </div>
                     <div class="actv-intros"><p>{{actvInfo.activitydesc}}</p></div>
                 </div>
-                <div class="apply-btn btn" @click="apply">发起报名</div>
+                <div class="apply-btn btn" @click="apply" v-show="actvInfo.isApply==0">发起报名</div>
             </div>
+            <Loading v-show="isLoading"/>
         </div>
     </div>
 </template>
 
 <script>
 import HeadBar from '@/components/HeadBar'
-import { mapActions,mapState } from 'vuex';
+import Loading from '@/components/Loading'
+import { mapActions,mapState } from 'vuex'
 import { toggleModal } from "../utils/tools"
 export default {
 name:'actvInfo',
   data () {
     return {
-        actvId:""
+        actvId:"",
+        isLoading:true
     };
   },
 
   components: {
-      HeadBar
+      HeadBar,
+      Loading
   },
   computed:{
-      ...mapState('volunteer',['actvInfo'])
+      ...mapState({
+          actvInfo:state=>state.volunteer.actvInfo,
+          serviceTypes:state=>state.user.serviceTypes
+      }),
+      //分开写法
+    //   ...mapState('user',['serviceTypes']),
+    //   ...mapState('volunteer',['actvInfo']),
+      servAreaName(){
+            let name="";
+            this.serviceTypes.map((item)=>{
+                if(this.actvInfo.activitytype==item.dictionaryId){
+                    name=item.dictionaryValue;
+                }
+            })
+            return name;
+        }
   },
   created(){
-      this.actvId=this.$route.params.actvId;
-      this.req_actvInfo([this.actvId,data=>{
-          if(data.state!==200){
-              toggleModal(data.message);
-          }
-      }])
+        this.actvId=this.$route.params.actvId;
+        let customerid=localStorage.getItem('customerid')
+        this.req_getServices((data)=>{
+            if(data.state!==200){
+                toggleModal(data.message);
+            }
+        })
+        this.req_actvInfo([this.actvId,customerid,data=>{
+            this.isLoading=false;
+            if(data.state!==200){
+                toggleModal(data.message);
+            }
+        }])
+      
   },
   methods:{
-      ...mapActions('volunteer',['req_actvInfo']),
+      ...mapActions({
+          req_actvInfo:'volunteer/req_actvInfo',
+          req_getServices:'user/req_getServices'
+      }),
+      //分开写法
+    //   ...mapActions('volunteer',['req_actvInfo']),
+    //   ...mapActions('user',['req_getServices']),
       apply(){
-          this.$router.push(`/apply/${this.actvId}`);
+           this.$router.push(`/apply/${this.actvId}/${this.actvInfo.activityname}`);
       }
   }
 }

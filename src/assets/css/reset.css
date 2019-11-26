@@ -135,3 +135,12 @@
 .btnGray{
   background: #f197a4;
 }
+.locations{
+  position: absolute;
+  width: 100%;
+  left:0;
+  text-align: center;
+  top:56%;
+  color: #999;
+  font-size: .8rem;
+}

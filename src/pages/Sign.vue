@@ -3,7 +3,7 @@
       <head-bar title="签到"/>
       <div class="sign-contents">
           <div class="sign-wraper">
-              <Scroller
+                <Scroller
                     @scrolling="scrolling" 
                     @touchEnded="touchEnded" 
                     :pullUpMsg="pullUpMsg"
@@ -12,21 +12,22 @@
                     :isPullDownLoading="isPullDownLoading"
                     :isFresh="isFresh"
                     :isShowUp="isShowUp"
+                    :hasData="hasData"
                 >
                 <ul class="sign-list">
                     <li v-for="(item,index) in signList" :key="index">
                         <div class="sign-top">
-                            <div class="sign-pic"><img :src="item.pic" alt=""></div>
+                            <div class="sign-pic"><img :src="item.ActivityRecruit.cover" alt=""></div>
                             <div class="sign-infos">
-                                <h2 class="sign-name">{{item.sign_name}}</h2>
+                                <h2 class="sign-name">{{item.ActivityRecruit.activityname}}</h2>
                                 <div class="sing-info-bottom">
                                     <p class="sign-num-wraps">
                                         <span class="num-icon"><img src="../assets/images/user.png" alt=""></span>
-                                        <span class="sign-num">{{item.join_num}}/{{item.total_num}}</span>
+                                        <span class="sign-num">{{item.ActivityRecruit.hascount}}/{{item.ActivityRecruit.recruitcount}}</span>
                                     </p>
                                     <p class="sign-addr-wraps">
                                         <span class="addr-icon"><img src="../assets/images/address.png" alt=""></span>
-                                        <span class="sign-addr">{{item.addr}}</span>
+                                        <span class="sign-addr">{{item.ActivityRecruit.address}}</span>
                                     </p>
                                 </div>
                             </div>
@@ -34,147 +35,237 @@
                         <div class="sign-bottom">
                             <div class="sign-time-wrapper">
                                 <div class="sign-time-left">
-                                    <p class="sign-hour">{{item.start_time_hour}}</p>
-                                    <p class="sign-date">{{item.start_time_date}}</p>
+                                    <p class="sign-hour">{{item.ActivityRecruit.activitystarttime |filterHour}}</p>
+                                    <p class="sign-date">{{item.ActivityRecruit.activitystarttime |filterDate}}</p>
                                 </div>
                                 <div class="sign-time-middle">————</div>
                                 <div class="sign-time-right">
-                                    <p class="sign-hour">{{item.end_time_hour}}</p>
-                                    <p class="sign-date">{{item.end_time_date}}</p>
+                                    <p class="sign-hour">{{item.ActivityRecruit.activityendtime |filterHour}}</p>
+                                    <p class="sign-date">{{item.ActivityRecruit.activityendtime |filterDate}}</p>
                                 </div>
                             </div>
-                            <div class="sign-btn-groups unSigned" v-if="item.signed==='0'">
-                                <span class="start-btn" @click="signStart">开始签到</span>
-                                <span class="exit-btn" @click="signExit">退签</span>
+                            <div class="sign-btn-groups" v-if="item.state=='1'">
+                                <span 
+                                    class="start-btn" 
+                                    @click="signs(item.ActivityRecruit.activityrecruitid,item.ActivityRecruit.addresslatitude,
+                                    item.ActivityRecruit.addresslongitude,item.ActivityRecruit.checkrange,'sign')"
+                                    >开始签到</span>
+                                <span class="exit-btn">签退</span>
                             </div>
-                            <div class="sign-btn-groups" v-else>
+                            <div class="sign-btn-groups" v-else-if="item.state=='2'">
+                                <span class="start-btn signed" >已完成</span>
+                                <span 
+                                class="exit-btn" 
+                                @click="signs(item.ActivityRecruit.activityrecruitid,item.ActivityRecruit.addresslatitude,
+                                    item.ActivityRecruit.addresslongitude,item.ActivityRecruit.checkrange,'signOut')"
+                                >签退</span>
+                            </div>
+                            <!-- <div class="sign-btn-groups" v-else>
                                 <span class="start-btn">开始签到</span>
-                                <span class="exit-btn">退签</span>
-                            </div>
+                                <span class="exit-btn">签退</span>
+                            </div> -->
                         </div>
                     </li>
                 </ul>
               </Scroller>
+                <Loading v-show="isLoading"/>
+                <Loading v-show="isLocation">
+                    <p class="locations" slot="contents">正在定位中....</p>
+                </Loading>
+              <p class="none-data" v-if="!signList.length">暂无数据</p>
           </div>
       </div>
+      <div class="map" id="map" style="display:none"></div>
+      
   </div>
 </template>
 
 <script>
 import Scroller from '@/components/Scroller';
 import HeadBar from '@/components/HeadBar'
+import Loading from '@/components/Loading'
+import { mapState,mapActions,mapMutations } from 'vuex';
+import { sign,signOut } from '../utils/api';
+import { toggleModal,pageSize,mapKey} from '../utils/tools'
+import MapLoader from '../utils/aMap'
+import aMap from '../utils/aMap';
 export default {
 name:'sign',
-  data () {
-    return {
-        isFresh:false,
-        isShowUp:true,
-        isPullUpLoading:false,
-        isPullDownLoading:false,
-        pullUpMsg:"上拉加载更多",
-        pullDownMsg:"下拉刷新",
-        signList:[
-            {
-                id:"001",
-                pic:require('../assets/images/sign.png'),
-                sign_name:"流浪狗救助活动(动物救助中心)",
-                total_num:'46',
-                join_num:"5",
-                addr:"成都金牛区火车北站",
-                start_time_hour:"14:00",
-                start_time_date:"2019-03-08",
-                end_time_hour:"16:00",
-                end_time_date:"2019-03-12",
-                signed:"0"
-            },
-            {
-                id:"002",
-                pic:require('../assets/images/sign.png'),
-                sign_name:"敬老院工衣慈善活动",
-                total_num:'46',
-                join_num:"5",
-                addr:"成都郫都区花园街道",
-                start_time_hour:"14:00",
-                start_time_date:"2019-03-08",
-                end_time_hour:"16:00",
-                end_time_date:"2019-03-12",
-                signed:"1"
-            },
-            {
-                id:"003",
-                pic:require('../assets/images/sign.png'),
-                sign_name:"流浪狗救助活动(动物救助中心)",
-                total_num:'46',
-                join_num:"5",
-                addr:"成都金牛区火车北站",
-                start_time_hour:"14:00",
-                start_time_date:"2019-03-08",
-                end_time_hour:"16:00",
-                end_time_date:"2019-03-12",
-                signed:"1"
-            },
-            {
-                id:"004",
-                pic:require('../assets/images/sign.png'),
-                sign_name:"流浪狗救助活动(动物救助中心)",
-                total_num:'46',
-                join_num:"5",
-                addr:"成都金牛区火车北站",
-                start_time_hour:"14:00",
-                start_time_date:"2019-03-08",
-                end_time_hour:"16:00",
-                end_time_date:"2019-03-12",
-                signed:"0"
+    data () {
+        return {
+            isFresh:false,
+            isShowUp:true,
+            isPullUpLoading:false,
+            isPullDownLoading:false,
+            isLocation:false,
+            isLoading:false,
+            pullUpMsg:"上拉加载更多",
+            pullDownMsg:"下拉刷新",
+            hasData:false,
+            pageNo:1,
+            state:0,
+            activityRecruitId:"",
+            startLonLat:"",
+            curRadius:"",
+            curActLat:"",
+            curActLon:"",
+            signType:""
+        };
+    },
+    components: {
+        HeadBar,
+        Scroller,
+        Loading
+    },
+    computed:{
+        ...mapState({
+            userInfo:state=>state.user.userInfo,
+            signList:state=>state.volunteer.signList
+        })
+    },
+    created(){
+        this.customerid=localStorage.getItem('customerid');
+        this.fetchData();
+    },
+    filters:{
+        filterHour(date){
+            return date.slice(11,16);
+        },
+        filterDate(date){
+            return date.slice(0,10);
+        }
+    },
+    methods: {
+        ...mapActions('volunteer',['req_signs']),
+        ...mapMutations('volunteer',['set_signin_list','set_signout_list']),
+        signs(id,lat,lon,radius,type){
+            this.activityRecruitId=id;
+            this.curActLat=parseFloat(lat);
+            this.curActLon=parseFloat(lon);
+            this.curRadius=parseInt(radius);
+            this.signType=type;
+            this.isLocation=true;
+            this.initMap()
+        },
+        touchEnded(pos,scroll){
+            if(pos.y>60){
+                this.refreshData();
+            }else if(pos.y<scroll.maxScrollY-30){
+                this.loadMore();
             }
-            
-        ]
-    };
-  },
+        },
+        scrolling(pos){
+            if(pos.y>60){
+                this.isPullDownLoading=true;
+            }
+        },
+        refreshData(){
+            setTimeout(()=>{
+                this.isPullDownLoading=false;
+                this.isFresh=true;
+                setTimeout(()=>{
+                    this.isFresh=false;
+                },1000)     
+            },1000)
+        },
+        loadMore(){
+            this.isPullUpLoading=true;
+            setTimeout(()=>{
+                this.isPullUpLoading=false;
+            },1000)
+        },
+        fetchData(){
+            this.isLoading=true;
+            this.req_signs([{pageSize,pageNo:this.pageNo,state:this.state,id:this.customerid},true,(data=>{
+                if(data.state===200){
+                    if(data.data&&data.data.length){
+                        this.pageNo++;
+                    }
+                    this.$nextTick(()=>{
+                        setTimeout(()=>{
+                            this.hasData=this.signList.length>pageSize?true:false;
+                            this.isLoading=false; 
+                        },500) 
+                    })
+                }else{
+                    toggleModal(data.message)
+                }
+            })])
+        },
+        onError(obj) {
+            alert(obj.info + '--' + obj.message);
+            console.log(obj);
+        },
+        initMap(callBack){
+            let that=this;
+            MapLoader().then(AMap => {
+                let map = new AMap.Map('map');
 
-  components: {
-    HeadBar,
-    Scroller
-  },
-
-  computed:{},
-
-  mounted(){},
-
-  methods: {
-      signStart(){
-          console.log("开始签到....")
-      },
-      signExit(){
-          console.log("我要退签....")
-      },
-      touchEnded(pos,scroll){
-      if(pos.y>60){
-          this.refreshData();
-      }else if(pos.y<scroll.maxScrollY-30){
-          this.loadMore();
-      }
-    },
-    scrolling(pos){
-      if(pos.y>60){
-          this.isPullDownLoading=true;
-      }
-    },
-    refreshData(){
-      setTimeout(()=>{
-          this.isPullDownLoading=false;
-          this.isFresh=true;
-          setTimeout(()=>{
-              this.isFresh=false;
-          },1000)     
-      },1000)
-    },
-    loadMore(){
-      this.isPullUpLoading=true;
-      setTimeout(()=>{
-          this.isPullUpLoading=false;
-      },1000)
-    },
-  }
+                map.plugin('AMap.Geolocation', function () {
+                
+                    var geolocation = new AMap.Geolocation({
+                        enableHighAccuracy: true, // 是否使用高精度定位，默认:true
+                        timeout: 10000,           // 超过10秒后停止定位，默认：无穷大
+                        maximumAge: 0,            // 定位结果缓存0毫秒，默认：0
+                        convert: true,            // 自动偏移坐标，偏移后的坐标为高德坐标，默认：true
+                        showButton: true,         // 显示定位按钮，默认：true
+                        buttonPosition: 'LB',     // 定位按钮停靠位置，默认：'LB'，左下角
+                        buttonOffset: new AMap.Pixel(10, 20), // 定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                        showMarker: true,         // 定位成功后在定位到的位置显示点标记，默认：true
+                        showCircle: true,         // 定位成功后用圆圈表示定位精度范围，默认：true
+                        panToLocation: true,      // 定位成功后将定位到的位置作为地图中心点，默认：true
+                        zoomToAccuracy:true       // 定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                    });
+                    
+                        map.addControl(geolocation);
+                        
+                        geolocation.getCurrentPosition();
+                        AMap.event.addListener(geolocation, 'complete', (map)=>{
+                             if(map){
+                                that.isLocation=false;
+                                const pos=map.position;
+                                const { lat,lng }=pos;
+                                let p1=[lng,lat];
+                                let p2=[that.curActLon,that.curActLat];
+                                let r=parseInt((AMap.GeometryUtil.distance(p1, p2)));
+                                if(that.curRadius-r>=0){
+                                    const { isvolunteer } =that.userInfo;
+                                    if(isvolunteer==1){
+                                        if(that.signType==='sign'){
+                                            sign({activityRecruitId:that.activityRecruitId,customerId:that.customerid}).then(data=>{
+                                                if(data.state===200){
+                                                    that.set_signin_list(that.activityRecruitId);
+                                                    toggleModal('签到成功');
+                                                }else{
+                                                    toggleModal(data.message);
+                                                }
+                                            })
+                                        }else{
+                                            signOut({activityRecruitId:that.activityRecruitId,customerId:that.customerid}).then(data=>{
+                                                if(data.state===200){
+                                                    that.set_signout_list(that.activityRecruitId);
+                                                    toggleModal('签退成功');
+                                                }else{
+                                                    toggleModal(data.message);
+                                                }
+                                            })
+                                        }
+                                    }else{
+                                        toggleModal("你不是志愿者，请成为志愿者吧！")
+                                    }
+                                    
+                                }else{
+                                    toggleModal('当前距离较远，不能签到！');
+                                }  
+                            }
+                        }); // 返回定位信息
+                        AMap.event.addListener(geolocation, 'error', that.onError);       // 返回定位出错信息
+                    });
+                }, e => {
+                        console.log('地图加载失败' ,e)
+            })
+        }
+    }
 }
 
 </script>
@@ -234,8 +325,10 @@ name:'sign',
                                     .addr-icon{
                                         display: inline-block;
                                         width: .5rem;
-                                        vertical-align: middle;
                                         margin-right: .1rem;
+                                    }
+                                    span{
+                                        vertical-align: middle;
                                     }
                                 }
                             }
@@ -256,7 +349,7 @@ name:'sign',
                                     line-height: 1rem;
                                 }
                                 .sign-hour{
-                                    font-size: .75rem;
+                                    font-size: .8rem;
                                 }
                                 .sign-date{
                                     color: #666;
@@ -270,10 +363,11 @@ name:'sign',
                             span{
                                 height: 2rem;
                                 text-align: center;
-                                color: #fff;
-                                background: #ccc;
+                                color: #ff0000;
+                                border:1px solid #ff0000;
                                 border-radius: 1rem;
                                 line-height: 2rem;
+                                box-sizing: border-box;
                             }
                             .start-btn{
                                 width: 7.5rem;
@@ -281,6 +375,10 @@ name:'sign',
                             }
                             .exit-btn{
                                 width: 3.5rem;
+                            }
+                            .signed{
+                                color: #fff;
+                                background: #ff0000;
                             }
                         }
                         .unSigned{

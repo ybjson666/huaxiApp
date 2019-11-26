@@ -6,7 +6,7 @@
               <li 
               v-for="(item,index) in typeList" 
               :key="index" 
-              :class="{on:curType===item.type}"
+              :class="{on:state===item.type}"
               @click="seleType(item.type)"
               ><span>{{item.name}}</span></li>
           </ul>
@@ -22,37 +22,44 @@
                     :isPullDownLoading="isPullDownLoading"
                     :isFresh="isFresh"
                     :isShowUp="isShowUp"
+                    :hasData="hasData"
                 >
                 <ul class="wish-list">
-                    <li v-for="(item,index) in wishList" :key="index">
+                    <li v-for="(item,index) in wishList" :key="index" @click="seekInfo(item.wishid)">
                         <div class="wish-info-title">
                             <div class="wish-title-wraps">
                                 <span class="wish-icon"><img src="../assets/images/wish.png" alt=""></span>
-                                <span class="wish-title">{{item.wish_name}}</span>
+                                <span class="wish-title">{{item.title}}</span>
                             </div>
-                            <span class="wish-type orange" v-if="item.type==='1'">待审核</span>
-                            <span class="wish-type orange" v-else-if="item.type==='2'">进行中</span>
-                            <span class="wish-type red" v-else-if="item.type==='4'">未通过</span>
+                            <span class="wish-type orange" v-if="item.state=='1'">待审核</span>
+                            <span class="wish-type orange" v-else-if="item.state=='2'">进行中</span>
+                            <span class="wish-type red" v-else-if="item.state=='3'">未通过</span>
+                            <span class="wish-type gray" v-else-if="item.state=='5'">已完成</span>
                         </div>
-                        <p class="wish-desc">心愿描述：{{item.wish_des}}</p>
+                        <p class="wish-desc">心愿描述：{{item.description}}</p>
                         <div class="wish-date-wraps">
-                            <span class="wish-date">提交时间：{{item.add_time}}</span>
-                            <span class="apply-btn red" v-if="item.type==='1'">取消申请</span>
-                            <span class="apply-btn" v-else>取消申请</span>
+                            <span class="wish-date">提交时间：{{item.subdate}}</span>
+                            <span class="apply-btn red" v-if="item.state=='1'" @click="cancel(item.wishid)">取消申请</span>
                         </div>
-                        <span class="down-tags" v-if="item.type==='3'"><img src="../assets/images/finish.png" alt=""></span>
+                        <span class="down-tags" v-if="item.state==='3'"><img src="../assets/images/finish.png" alt=""></span>
                     </li>
                 </ul>
               </Scroller>
+              <Loading v-show="isLoading"/>
+              <p class="none-data" v-if="!wishList.length">暂无数据</p>
           </div>
       </div>
+      
   </div>
 </template>
 
 <script>
 import Scroller from '@/components/Scroller';
 import HeadBar from '@/components/HeadBar'
-
+import { toggleModal,pageSize } from '../utils/tools';
+import { mapState,mapActions } from 'vuex';
+import { cancelWish } from '../utils/api'
+import Loading from '@/components/Loading'
 export default {
 name:'wish',
   data () {
@@ -61,9 +68,11 @@ name:'wish',
         isShowUp:true,
         isPullUpLoading:false,
         isPullDownLoading:false,
+        hasData:false,
         pullUpMsg:"上拉加载更多",
         pullDownMsg:"下拉刷新",
-        curType:"0",
+        isLoading:false,
+        state:"0",
         typeList:[
             {
                 type:"0",
@@ -79,79 +88,45 @@ name:'wish',
             },
             {
                 type:"3",
+                name:"未通过"
+            },
+            {
+                type:"5",
                 name:"已完成"
             },
-            {
-                type:"4",
-                name:"未通过"
-            }
         ],
-        wishList:[
-            {
-                id:"001",
-                wish_name:"荒地绿植计划活动",
-                type:"1",
-                wish_des:"富士胶片的沙漠绿化志愿者队伍从各....",
-                add_time:"2019-03-12 10:25:30"
-            },
-            {
-                id:"002",
-                wish_name:"贫困乡村志愿救助活动",
-                type:"2",
-                wish_des:"多少个日日夜夜，他们骷髅的双肩....",
-                add_time:"2019-03-12 10:25:30"
-            },
-            {
-                id:"003",
-                wish_name:"城市垃圾分类公益活动",
-                type:"3",
-                wish_des:"垃圾分类“不打烊”！让我们一起....",
-                add_time:"2019-03-12 10:25:30"
-            },
-            {
-                id:"004",
-                wish_name:"乡村建设发展活动",
-                type:"4",
-                wish_des:"富士胶片的沙漠绿化志愿者队伍从各....",
-                add_time:"2019-03-12 10:25:30"
-            },
-            {
-                id:"005",
-                wish_name:"还人类蓝天公益活动",
-                type:"3",
-                wish_des:"富士胶片的沙漠绿化志愿者队伍从各....",
-                add_time:"2019-03-12 10:25:30"
-            },
-            {
-                id:"006",
-                wish_name:"荒地绿植计划活动",
-                type:"4",
-                wish_des:"富士胶片的沙漠绿化志愿者队伍从各....",
-                add_time:"2019-03-12 10:25:30"
-            }
-        ]
+        isMine:'Y',
+        pageNo:1
     };
   },
 
   components: {
     HeadBar,
-    Scroller
+    Scroller,
+    Loading
   },
 
-  computed:{},
+  computed:{
+      ...mapState('wish',['wishList'])
+  },
 
-  mounted(){},
+  created(){
+    this.fetchData();
+  },
 
   methods: {
+      ...mapActions('wish',['req_Wish']),
       seleType(type){
-          this.curType=type;
+          this.state=type;
+          this.pageNo=1;
+          this.fetchData();
       },
       touchEnded(pos,scroll){
-      if(pos.y>60){
-          this.refreshData();
-      }else if(pos.y<scroll.maxScrollY-30){
-          this.loadMore();
-      }
+        if(pos.y>60){
+            this.refreshData();
+        }else if(pos.y<scroll.maxScrollY-30){
+            this.loadMore();
+        }
     },
     scrolling(pos){
       if(pos.y>60){
@@ -159,20 +134,70 @@ name:'wish',
       }
     },
     refreshData(){
-      setTimeout(()=>{
-          this.isPullDownLoading=false;
-          this.isFresh=true;
-          setTimeout(()=>{
-              this.isFresh=false;
-          },1000)     
-      },1000)
+        this.pageNo=1;
+        this.req_Wish([{isMine:this.isMine,state:this.state,pageNo:this.pageNo,pageSize},true,data=>{
+            this.isFresh=true;
+            if(data.state===200 && data.data.length){
+                this.pageNo++;
+                this.$nextTick(()=>{
+                    setTimeout(()=>{
+                        this.hasData=this.wishList.length>=pageSize?true:false; 
+                        this.isFresh=false;
+                        this.isPullDownLoading=false;
+                    },1000);
+                })
+                
+            }else{
+                toggleModal(data.message)
+            }
+        }])
     },
     loadMore(){
       this.isPullUpLoading=true;
-      setTimeout(()=>{
-          this.isPullUpLoading=false;
-      },1000)
+      this.req_Wish([{isMine:this.isMine,state:this.state,pageNo:this.pageNo,pageSize},false,data=>{
+          if(data.state===200){
+              if(data.data.length){
+                  this.pageNo++;
+              }
+            this.isPullUpLoading=false;
+          }else{
+                toggleModal(data.message)
+            }
+      }])
     },
+    fetchData(){
+        this.isLoading=true;
+        this.req_Wish([{isMine:this.isMine,state:this.state,pageNo:this.pageNo,pageSize},true,data=>{
+        if(data.state===200){
+            if(data.data &&data.data.length){
+                this.pageNo++;
+            }
+            this.$nextTick(()=>{
+                setTimeout(()=>{
+                    this.hasData=this.wishList.length>=pageSize?true:false; 
+                    this.isLoading=false;
+                },500);
+            })
+        }else{
+            this.isLoading=false;
+            toggleModal(data.message)
+        }
+      }])
+    },
+    cancel(wishId){
+        cancelWish({wishId}).then(data=>{
+            if(data.state===200){
+                toggleModal('取消成功');
+                this.pageNo=1;
+                this.fetchData();
+            }else{
+                toggleModal(data.message);
+            }
+        })
+    },
+    seekInfo(id){
+        this.$router.push(`/wishInfo/${id}`)
+    }
   }
 }
 
@@ -259,6 +284,9 @@ name:'wish',
                         }
                         .red{
                             color: #ff0000;
+                        }
+                        .gray{
+                            color: #ccc;
                         }
                     }
                     .down-tags{

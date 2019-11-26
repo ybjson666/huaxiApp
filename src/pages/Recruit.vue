@@ -59,6 +59,7 @@
             </li>
           </ul>
         </Scroller>
+        <Loading v-show="isLoading"/>
          <p class="none-data" v-if="!votList.length">暂无数据</p>
       </div>
     </div>
@@ -70,32 +71,35 @@
 import Scroller from '@/components/Scroller';
 import HeadBar from '@/components/HeadBar'
 import ServicePicker from '@/components/ServicePicker'
+import Loading from '@/components/Loading'
 import {mapActions,mapState} from 'vuex'
 import { toggleModal,pageSize } from '../utils/tools'
 export default {
 name:'recruit',
   data () {
     return {
-      isAsen:true,
       seekServArea:false,
       isFresh:false,
       isShowUp:true,
       isPullUpLoading:false,
       isPullDownLoading:false,
       hasData:false,
+      isLoading:false,
       pullUpMsg:"上拉加载更多",
       pullDownMsg:"下拉刷新",
       areaId:"",
-      sort:1,
+      sort:0,
       pageNo:1,
-      isAll:'Y'
+      isAll:'Y',
+      state:0
     };
   },
 
   components: {
     HeadBar,
     Scroller,
-    ServicePicker
+    ServicePicker,
+    Loading
   },
 
   computed:{
@@ -109,20 +113,7 @@ name:'recruit',
             toggleModal(data.message);
         }
     })
-    this.req_Vots([{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize},true,data=>{
-      if(data.state==200){
-        if(data.data&&data.data.length){
-            this.pageNo++;
-            this.$nextTick(()=>{
-              setTimeout(()=>{
-                this.hasData=this.votList.length>=pageSize?true:false; 
-              },1000);
-            })
-        }
-      }else{
-        toggleModal(data.message)
-      }
-    }])
+    this.fetchData();
   },
   methods: {
     ...mapActions('user',['req_servAreas']),
@@ -141,7 +132,7 @@ name:'recruit',
     },
     refreshData(){
       this.pageno=1;
-      this.req_Vots([{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize,state:0},true,data=>{
+      this.req_Vots([{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize,state:this.state},true,data=>{
         this.isFresh=true;
         if(data.state===200 && data.data&&data.data.length){
             this.pageno++;
@@ -160,7 +151,7 @@ name:'recruit',
     },
     loadMore(){
       this.isPullUpLoading=true;
-      this.req_Vots([{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize},false,data=>{
+      this.req_Vots([{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize,state:this.state},false,data=>{
           if(data.state===200){
               if(data.data.length){
                   this.pageno++;
@@ -176,14 +167,17 @@ name:'recruit',
       this.$refs.down.style='transform:rotate(180deg)'
     },
     toggelSort(){
-      if(this.isAsen){
-        this.isAsen=false;
+      if(this.sort==0){
+        this.sort=1;
         this.$refs.sorts.style='transform:rotate(180deg)';
       }else{
-        this.isAsen=true;
+         this.sort=0;
         this.$refs.sorts.style='transform:rotate(0deg)';
       }
-      console.log(this.isAsen)
+      this.pageNo=1;
+      this.isAll='N';
+      this.fetchData();
+
     },
     goInfo(id){
       this.$router.push(`/actvInfo/${id}`);
@@ -195,21 +189,25 @@ name:'recruit',
       this.seekServArea=false;
       this.areaId=item.dictionaryId;
       this.pageNo=1;
+      this.isAll='N';
       this.fetchData();
     },
     fetchData(){
-      this.req_Vots([{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize},true,data=>{
+      this.isLoading=true;
+      this.req_Vots([{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize,state:this.state},true,data=>{
       if(data.state==200){
-          if(data.data.length){
+          if(data.data&&data.data.length){
             this.pageNo++;
-            this.$nextTick(()=>{
-              setTimeout(()=>{
-                this.hasData=this.votList.length>=pageSize?true:false; 
-              },1000);
-            })
           }
+          this.$nextTick(()=>{
+            setTimeout(()=>{
+              this.hasData=this.votList.length>=pageSize?true:false;
+              this.isLoading=false; 
+            },1000);
+          })
         }else{
-          toggleModal(data.message)
+          toggleModal(data.message);
+          this.isLoading=false; 
         }
       }])
     }

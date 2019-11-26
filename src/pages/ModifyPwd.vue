@@ -16,7 +16,7 @@
                   <input type="password" placeholder="请再次输入新密码"  v-model="repassword" class="rows-input">
               </div>
           </div>
-          <button class="modify-btn btn" @click="submiting" :disabled="isUse">确认修改</button>
+          <button class="modify-btn btn" @click="submiting" :disabled="isUse" :class="{btnGray:isUse}">确认修改</button>
       </div>
   </div>
 </template>
@@ -68,9 +68,14 @@ name:'password',
             this.isUse=true;
             modifyPwd({ password,newpassword,repassword }).then((data)=>{
                if(data.state===200){
+                   toggleModal("修改成功");
+                   this.isUse=fale;
                    this.password="";
                    this.newpassword="";
                    this.repassword="";
+               }else{
+                   toggleModal(data.message);
+                   this.isUse=fale;
                }
             })
         }

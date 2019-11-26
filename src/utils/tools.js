@@ -5,6 +5,7 @@ export const reg_pwd = /^(?![a-zA-Z]+$)(?!\d+$)(?![\W_]+$)\S{6,20}$/;
 export const BASE_URL='http://39.100.155.1:8081';
 //每页显示条数
 export const pageSize=10;
+export const mapKey='d02ce754ffe9c4a719a3ec20212d904c';
 /**
  * 模态框开关切换
 */

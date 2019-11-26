@@ -1,6 +1,6 @@
 <template>
   <div class='main-container'>
-    <transition name="bounce" mote="out-in">
+    <transition name="fade" mote="out-in">
       <keep-alive>
         <router-view/>
       </keep-alive>

@@ -4,10 +4,10 @@
       <div class="type-bar block">
           <ul class="type-list">
               <li 
-              v-for="(item,index) in typeList" 
-              :key="index" 
-              :class="{on:curType===item.type}"
-              @click="seleType(item.type)"
+                v-for="(item,index) in typeList" 
+                :key="index" 
+                :class="{on:state===item.type}"
+                @click="seleType(item.type)"
               ><span>{{item.name}}</span></li>
           </ul>
       </div>
@@ -22,46 +22,54 @@
                     :isPullDownLoading="isPullDownLoading"
                     :isFresh="isFresh"
                     :isShowUp="isShowUp"
+                    :hasData="hasData"
                 >
                 <ul class="actv-list">
                     <li v-for="(item,index) in actvList" :key="index">
                         <div class="actv-pic">
-                            <img :src="item.pic" alt="">
-                            <div class="actv-tags" v-if="item.type!=='3'">
-                                <span class="tags-text" v-if="item.type=='1'">待审核</span>
-                                <span class="tags-text" v-else-if="item.type=='2'">已通过</span>
+                            <img :src="item.cover" alt="">
+                            <div class="actv-tags" v-if="item.applyState!=='3'">
+                                <span class="tags-text" v-if="item.applyState=='1'">待审核</span>
+                                <span class="tags-text" v-else-if="item.applyState=='2'">已通过</span>
+                                <span class="tags-text" v-else-if="item.applyState=='4'">已取消</span>
                             </div>
                         </div>
                         <div class="actv-infos">
                             <div class="actv-title-wraps">
-                                <span class="actv-title fl">{{item.actv_name}}</span>
-                                <span class="cancel unCancel fr" v-if="item.type==='1'" @click="canceAply">取消申请</span>
-                                <span class="cancel canceled fr" v-if="item.type==='2'">取消申请</span>
+                                <span class="actv-title fl">{{item.activityname}}</span>
+                                <span class="cancel unCancel fr" v-if="item.applyState=='1'" @click="canceAplys(item.activityrecruitid)">取消申请</span>
+                                <span class="cancel canceled fr" v-if="item.applyState=='2'">取消申请</span>
                                 <div class="cl"></div>
                             </div>
                             <div class="actv-bottom">
                                 <p class="actv-time-wraps">
                                     <span class="time-icon"><img src="../assets/images/time.png" alt=""></span>
-                                    <span class="actv-time">{{item.actv_time}}</span>
+                                    <span class="actv-time">{{item.subdate}}</span>
                                 </p>
                                 <p class="actv-addr-wraps">
                                     <span class="addr-icon"><img src="../assets/images/address.png" alt=""></span>
-                                    <span class="actv-addr">{{item.actv_addr}}</span>
+                                    <span class="actv-addr">{{item.address}}</span>
                                 </p>
                             </div>
-                            <div class="actv-mark" v-if="item.type==='3'"><img src="../assets/images/failure.png" alt=""></div>
+                            <div class="actv-mark" v-if="item.applyState==='3'"><img src="../assets/images/failure.png" alt=""></div>
                         </div>
                     </li>
                 </ul>
               </Scroller>
+              <Loading v-show="isLoading"/>
+              <p class="none-data" v-if="!actvList.length">暂无数据</p>
           </div>
       </div>
   </div>
 </template>
 
 <script>
-import Scroller from '@/components/Scroller';
+import Scroller from '@/components/Scroller'
 import HeadBar from '@/components/HeadBar'
+import Loading from '@/components/Loading'
+import {  mapActions,mapState,mapMutations } from 'vuex'
+import { toggleModal,pageSize } from '../utils/tools'
+import { cancelApply } from '../utils/api'
 export default {
 name:'active',
   data () {
@@ -70,9 +78,13 @@ name:'active',
         isShowUp:true,
         isPullUpLoading:false,
         isPullDownLoading:false,
+        isLoading:false,
+        hasData:false,
         pullUpMsg:"上拉加载更多",
         pullDownMsg:"下拉刷新",
-        curType:"0",
+        state:"0",
+        customerId:"",
+        pageNo:1,
         typeList:[
             {
                 type:"0",
@@ -90,103 +102,104 @@ name:'active',
                 type:"3",
                 name:"未通过"
             }
-        ],
-        actvList:[
-            {
-                id:"001",
-                pic:require('../assets/images/team_pic.png'),
-                type:"1",
-                actv_name:"高新区科技实践站,科技实践活动要大力宣传",
-                actv_time:"2019-05-21 18:06:25",
-                actv_addr:"成都高新区"
-            },
-            {
-                id:"002",
-                pic:require('../assets/images/team_pic.png'),
-                type:"3",
-                actv_name:"荒地绿植计划活动",
-                actv_time:"2019-05-21 18:06:25",
-                actv_addr:"成都郫都区"
-            },
-            {
-                id:"003",
-                pic:require('../assets/images/team_pic.png'),
-                type:"2",
-                actv_name:"流浪狗救助活动",
-                actv_time:"2019-05-21 18:06:25",
-                actv_addr:"成都锦江区"
-            },
-            {
-                id:"004",
-                pic:require('../assets/images/team_pic.png'),
-                type:"1",
-                actv_name:"乡村教育支援活动",
-                actv_time:"2019-05-21 18:06:25",
-                actv_addr:"成都温江区"
-            },
-            {
-                id:"005",
-                pic:require('../assets/images/team_pic.png'),
-                type:"1",
-                actv_name:"高新区科技实践站",
-                actv_time:"2019-05-21 18:06:25",
-                actv_addr:"成都高新区"
-            },
-            {
-                id:"006",
-                pic:require('../assets/images/team_pic.png'),
-                type:"3",
-                actv_name:"高新区科技实践站",
-                actv_time:"2019-05-21 18:06:25",
-                actv_addr:"成都高新区"
-            }
         ]
     };
   },
-  components: {
-    HeadBar,
-    Scroller
-  },
+    components: {
+        HeadBar,
+        Scroller,
+        Loading
+    },
+    computed:{
+        ...mapState('volunteer',['actvList']),
+    },
 
-  computed:{},
-
-  mounted(){},
-
-  methods: {
-      seleType(type){
-          this.curType=type;
-      },
-      canceAply(){
-          console.log("取消申请....")
-      },
-      touchEnded(pos,scroll){
-      if(pos.y>60){
-          this.refreshData();
-      }else if(pos.y<scroll.maxScrollY-30){
-          this.loadMore();
-      }
+    created(){
+        this.customerId=localStorage.getItem('customerid');
+        this.fetchData();
     },
-    scrolling(pos){
-      if(pos.y>60){
-          this.isPullDownLoading=true;
-      }
-    },
-    refreshData(){
-      setTimeout(()=>{
-          this.isPullDownLoading=false;
-          this.isFresh=true;
-          setTimeout(()=>{
-              this.isFresh=false;
-          },1000)     
-      },1000)
-    },
-    loadMore(){
-      this.isPullUpLoading=true;
-      setTimeout(()=>{
-          this.isPullUpLoading=false;
-      },1000)
-    },
-  }
+    methods: {
+        ...mapActions('volunteer',['req_actvs']),
+        ...mapMutations('volunteer',['set_cancel_actv_list']),
+        seleType(type){
+            this.state=type;
+            this.pageNo=1;
+            this.fetchData();
+        },
+        canceAplys(id){
+            cancelApply({activityEnterId:id,customerId:this.customerId}).then(data=>{
+                if(data.state==200){
+                    this.set_cancel_actv_list(id)
+                    toggleModal("取消成功");
+                }else{
+                    toggleModal(data.message);
+                }
+            })
+        },
+        touchEnded(pos,scroll){
+            if(pos.y>60){
+                this.refreshData();
+            }else if(pos.y<scroll.maxScrollY-30){
+                this.loadMore();
+            }
+        },
+        scrolling(pos){
+            if(pos.y>60){
+                this.isPullDownLoading=true;
+            }
+        },
+        refreshData(){
+            this.pageNo=1;
+            this.req_actvs([{id:this.customerId,state:this.state,pageNo:this.pageNo,pageSize},true,data=>{
+                this.isFresh=true;
+                if(data.state===200 && data.data.length){
+                    this.pageNo++;
+                    this.$nextTick(()=>{
+                        setTimeout(()=>{
+                            this.hasData=this.wishList.length>=pageSize?true:false; 
+                            this.isFresh=false;
+                            this.isPullDownLoading=false;
+                        },1000);
+                    })
+                    
+                }else{
+                    toggleModal(data.message)
+                }
+            }])
+        },
+        loadMore(){
+            this.isPullUpLoading=true;
+            this.req_actvs([{id:this.customerId,state:this.state,pageNo:this.pageNo,pageSize},false,data=>{
+                if(data.state===200){
+                    if(data.data.length){
+                        this.pageNo++;
+                    }
+                this.isPullUpLoading=false;
+                }else{
+                    toggleModal(data.message)
+                }
+            }])
+        },
+        fetchData(){
+            this.isLoading=true;
+            this.req_actvs([{id:this.customerId,state:this.state,pageNo:this.pageNo,pageSize},true,data=>{
+            if(data.state===200){
+                if(data.data &&data.data.length){
+                    this.pageNo++;
+                }
+                this.$nextTick(()=>{
+                    setTimeout(()=>{
+                        this.hasData=this.actvList.length>=pageSize?true:false; 
+                        this.isLoading=false;
+                    },500);
+                })
+            }else{
+                this.isLoading=false;
+                toggleModal(data.message)
+            }
+            }])
+        }
+    }
 }
 
 </script>

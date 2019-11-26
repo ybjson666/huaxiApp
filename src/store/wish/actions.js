@@ -19,7 +19,6 @@ export default {
     async req_WishInfo({commit},[data,callBack]){//获取心愿详情
         const res=await getWishInfo(data);
         if(res.state===200){
-            console.log(res)
             const wish=res.data;
             commit(SET_WISH,wish);
         }

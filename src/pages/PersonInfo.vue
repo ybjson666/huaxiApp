@@ -98,7 +98,6 @@
           <button class="save-btn btn" :disabled="isSaved" @click="saveUser" :class="{btnGray:isSaved}">保存</button>
       </div>
       <city-selector :column = 3  :show="isShowAddr" idName="addr-box"/>
-      <city-selector :column = 3  :show="isShowServ" idName="service-box"/>
       <Picker :show="showFrame" @closeFrame="closeFrame('educa')" :dataSource="educations" @chooseItem="chooseItem"/>
       <Picker :show="showPolit" @closeFrame="closeFrame('polit')" :dataSource="politicls" @chooseItem="choosePolit" />
       <ServicePicker :show="seekService" @closeFrame="closeFrame('service')" :dataSource="serviceTypes" @chooseItem="chooseService"/>
@@ -120,7 +119,6 @@ name:'person',
   data () {
     return {
         isShowAddr:false,
-        isShowServ:false,
         isSaved:false,
         showFrame:false,
         showPolit:false,
@@ -138,7 +136,7 @@ name:'person',
     computed:{
         ...mapState('user',['userInfo','serviceTypes','servAreas']),
         ...mapGetters('user',['educations','politicls']),
-         politName(){
+        politName(){
             let name="";
             this.politicls.map((item)=>{
                 if(this.userInfo.politicallevel==item.DictID){
@@ -275,7 +273,10 @@ name:'person',
                         break;
                     case 'head':
                         resetUserPic({base64Code:this.result}).then((data)=>{
-                            console.log(data);
+                            if(data.state===200){
+                                toggleModal('上传成功');
+                                that.userInfo.userPic=data.data;
+                            }
                         })
                     default:
                         break;

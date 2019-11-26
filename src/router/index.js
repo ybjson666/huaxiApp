@@ -160,7 +160,7 @@ const routes=[
     }
   },
   {
-    path:'/apply/:actvId',
+    path:'/apply/:actvId/:actvName',
     name:'apply',
     component:()=>import('@/pages/Apply.vue'),
     meta:{

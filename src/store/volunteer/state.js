@@ -1,5 +1,7 @@
 
 export default{
     votList:[],
-    actvInfo:{}
+    actvInfo:{},
+    signList:[],
+    actvList:[]
 }

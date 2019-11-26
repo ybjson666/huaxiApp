@@ -10,8 +10,8 @@ import { SET_USER,
 function assignUser(result){
     const {sex,sourceType,userMobile,userName,userNick,userPic,userToken,id,groupName,groupId,birthday,realName}=result.r;
     const user_r={sex,sourceType,userMobile,userName,userNick,userPic,userToken,id,groupName,groupId,birthday,realName}
-    const { education,email,areaid,idcardno,politicallevel,servicetype,servicearea,address,idcardfronturl,idcardbackurl,isvolunteer }=result.l;
-    const user_l={ education,email,areaid,idcardno,politicallevel,servicetype,servicearea,address,idcardfronturl,idcardbackurl,isvolunteer }
+    const { education,email,areaid,idcardno,politicallevel,servicetype,servicearea,address,idcardfronturl,idcardbackurl,isvolunteer,customerid }=result.l;
+    const user_l={ education,email,areaid,idcardno,politicallevel,servicetype,servicearea,address,idcardfronturl,idcardbackurl,isvolunteer,customerid }
     return Object.assign({},user_l,user_r);
 }
 
@@ -21,9 +21,11 @@ export default {
         if(res.state===200){
             const result=res.data;
             const {userToken,id}=result.r;
+            const { customerid }=result.l;
             const user=assignUser(result);
                 localStorage.setItem('appToken',userToken);
                 localStorage.setItem('uid',id);
+                localStorage.setItem('customerid',customerid);
             commit(SET_TOKEN,userToken);
             commit(SET_UID,id);
             commit(SET_USER,user);
@@ -34,6 +36,8 @@ export default {
         const res=await getUser();
         if(res&&res.state===200){
             const result=res.data;
+            const { customerid }=result.l;
+            localStorage.setItem('customerid',customerid);
             const user=assignUser(result);
             commit(SET_USER,user);
         }

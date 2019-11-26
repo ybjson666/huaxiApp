@@ -3,23 +3,25 @@
       <head-bar title="招募报名"/>
       <div class="apply-contents">
           <p class="actv-title-bar"><span class="rect"></span>活动名称</p>
-          <p class="actv-title">{{title}}</p>
-          <textarea class="apply-desc" v-model="desc" placeholder="请在次输入报名申请描述"></textarea>
-          <button class="apply-btn" :disabled="isApply">提交报名申请</button>
+          <p class="actv-title">{{actvName}}</p>
+          <textarea class="apply-desc" v-model="remark" placeholder="请在次输入报名申请描述"></textarea>
+          <button class="apply-btn btn" :disabled="isApply" @click="goApply" :class="{btnGray:isApply}">提交报名申请</button>
       </div>
   </div>
 </template>
 
 <script>
 import HeadBar from '@/components/HeadBar'
+import { apply } from '../utils/api';
+import  { toggleModal } from '../utils/tools'
 export default {
 name:'apply',
   data () {
     return {
-        actvId:"",
-        title:"流浪动物救助活动",
+        id:"",
+        actvName:"",
         isApply:false,
-        desc:""
+        remark:""
     };
   },
 
@@ -30,11 +32,33 @@ name:'apply',
   computed:{},
 
   mounted(){
-      this.actvId=this.$route.params.actvId;
-      console.log(this.actvId)
+      const { actvId,actvName }=this.$route.params;
+      this.id=actvId;
+      this.actvName=actvName;
+     
   },
 
-  methods: {}
+  methods: {
+      goApply(){
+          const { id, remark } =this;
+
+          if(!remark){
+              toggleModal("请输入报名申请描述");
+              return;
+          }
+          this.isApply=true;
+          apply({id,remark}).then(data=>{
+              if(data.state==200){
+                  toggleModal('报名成功');
+                  this.remark="";
+              }else{
+                  toggleModal(data.message);
+                  this.isApply=false;
+              }
+          })
+
+      }
+  }
 }
 
 </script>
@@ -81,14 +105,6 @@ name:'apply',
         .apply-btn{
             margin: 0 auto;
             margin-top: 3rem;
-            width: 12.5rem;
-            height: 2rem;
-            line-height: 2rem;
-            text-align: center;
-            background: #ff0000;
-            color: #fff;
-            border-radius: 1rem;
-            font-size: .8rem;
         }
     }
 }
