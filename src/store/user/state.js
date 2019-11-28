@@ -4,5 +4,6 @@ export default{
     uid:JSON.parse(localStorage.getItem('uid')) || {},
     serviceTypes:[],
     personBackgrounds:[],
-    servAreas:[]
+    servAreas:[],
+    cityDatas:JSON.parse(localStorage.getItem('cityDatas')) || [],
 }

@@ -34,12 +34,13 @@
                             <span class="wish-type orange" v-if="item.state=='1'">待审核</span>
                             <span class="wish-type orange" v-else-if="item.state=='2'">进行中</span>
                             <span class="wish-type red" v-else-if="item.state=='3'">未通过</span>
+                            <span class="wish-type gray" v-else-if="item.state=='4'">已取消</span>
                             <span class="wish-type gray" v-else-if="item.state=='5'">已完成</span>
                         </div>
                         <p class="wish-desc">心愿描述：{{item.description}}</p>
                         <div class="wish-date-wraps">
                             <span class="wish-date">提交时间：{{item.subdate}}</span>
-                            <span class="apply-btn red" v-if="item.state=='1'" @click="cancel(item.wishid)">取消申请</span>
+                            <span class="apply-btn red" v-if="item.state=='1'" @click.stop="cancel(item.wishid)">取消申请</span>
                         </div>
                         <span class="down-tags" v-if="item.state==='3'"><img src="../assets/images/finish.png" alt=""></span>
                     </li>
@@ -57,7 +58,7 @@
 import Scroller from '@/components/Scroller';
 import HeadBar from '@/components/HeadBar'
 import { toggleModal,pageSize } from '../utils/tools';
-import { mapState,mapActions } from 'vuex';
+import { mapState,mapActions,mapMutations } from 'vuex';
 import { cancelWish } from '../utils/api'
 import Loading from '@/components/Loading'
 export default {
@@ -115,8 +116,9 @@ name:'wish',
   },
 
   methods: {
-      ...mapActions('wish',['req_Wish']),
-      seleType(type){
+    ...mapActions('wish',['req_Wish']),
+    ...mapMutations('wish',['cancel_wish']),
+    seleType(type){
           this.state=type;
           this.pageNo=1;
           this.fetchData();
@@ -190,6 +192,7 @@ name:'wish',
                 toggleModal('取消成功');
                 this.pageNo=1;
                 this.fetchData();
+                // this.cancel_wish(wishId);
             }else{
                 toggleModal(data.message);
             }
@@ -266,6 +269,9 @@ name:'wish',
                         }
                         .red{
                             color: #ff0000;
+                        }
+                        .gray{
+                            color: #ccc;
                         }
                     }
                     .wish-desc{

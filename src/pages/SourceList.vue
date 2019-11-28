@@ -40,7 +40,7 @@
             <p class="none-data" v-if="!sourceList.length">暂无数据</p>
           </div>
       </div>
-      <city-selector :column = 3  :show="isShow" idName="city-box" />
+      <!-- <city-selector :column = 3  :show="isShow" idName="city-box" /> -->
       <input type="text" style="display:none" id="city-box" @input="getVal">
   </div>
 </template>

@@ -1,10 +1,11 @@
-import { login,getUser,getServiceType,getEducation,getServArea} from '../../utils/api';
+import { login,getUser,getServiceType,getEducation,getServArea,getCitys} from '../../utils/api';
 import { SET_USER,
         SET_TOKEN,
         SET_UID,
         SET_SERVICE_TYPE,
         SET_BACKGROUNDS,
-        SET_SERVAREA
+        SET_SERVAREA,
+        SET_CITYS
 } from './mutation_types';
 
 function assignUser(result){
@@ -67,6 +68,15 @@ export default {
             const result=res.data;
             const list=result;
             commit(SET_SERVAREA,list);
+        }
+        callBack(res)
+    },
+    async req_citys({commit},callBack){//获取行政区域
+        const res=await getCitys();
+        if(res&&res.state===200){
+            const result=res.data.childAreaDtos;
+            localStorage.setItem('cityDatas',JSON.stringify(result));
+            commit(SET_CITYS,result);
         }
         callBack(res)
     }

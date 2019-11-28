@@ -3,7 +3,8 @@ import { SET_USER,
     SET_UID,
     SET_SERVICE_TYPE,
     SET_BACKGROUNDS,
-    SET_SERVAREA
+    SET_SERVAREA,
+    SET_CITYS
 } from './mutation_types';
 
 
@@ -25,5 +26,9 @@ export default{
     },
     [SET_SERVAREA](state,list){
         state.servAreas=list;
-    }
+    },
+    [SET_CITYS](state,list){
+        state.cityDatas=list;
+    },
+    
 }

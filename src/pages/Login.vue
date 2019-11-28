@@ -82,7 +82,6 @@ name:'login',
               return;
           }
           this.req_login([{phone,password},(data)=>{
-              console.log(data)
               if(data.state===200){
                   toggleModal('登录成功');
                   setTimeout(()=>{

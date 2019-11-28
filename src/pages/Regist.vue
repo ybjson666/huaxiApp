@@ -101,6 +101,8 @@ name:'regist',
                 setTimeout(()=>{
                     this.$router.push('/login')
                 },1000);
+            }else{
+                toggleModal(data.message);
             }
         })
         

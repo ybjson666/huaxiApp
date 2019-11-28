@@ -16,7 +16,7 @@
                     </div>
                     <div class="rows" @click="showAddr">
                         <span class="label">区域</span>
-                        <input type="text" class="rows-input" v-model="userInfo.areaid" @input="getAddr" id="addr-box">
+                        <input type="text" class="rows-input" v-model="cityName" @input="getAddr" id="addr-box">
                         <span class="arrow"><img src="../assets/images/into.png" alt=""></span>
                     </div>
               </div>
@@ -96,8 +96,9 @@
               </div>
           </div>
           <button class="save-btn btn" :disabled="isSaved" @click="saveUser" :class="{btnGray:isSaved}">保存</button>
+          <Loading v-show="isLoading"/>
       </div>
-      <city-selector :column = 3  :show="isShowAddr" idName="addr-box"/>
+      <city-selector :column = 3  :show="isShowAddr" idName="addr-box" :cityDatas="cityDatas"/>
       <Picker :show="showFrame" @closeFrame="closeFrame('educa')" :dataSource="educations" @chooseItem="chooseItem"/>
       <Picker :show="showPolit" @closeFrame="closeFrame('polit')" :dataSource="politicls" @chooseItem="choosePolit" />
       <ServicePicker :show="seekService" @closeFrame="closeFrame('service')" :dataSource="serviceTypes" @chooseItem="chooseService"/>
@@ -110,9 +111,10 @@ import HeadBar from '@/components/HeadBar'
 import CitySelector from '@/components/CitySelector'
 import Picker from '@/components/Picker'
 import ServicePicker from '@/components/ServicePicker'
+import Loading from '@/components/Loading'
 import { mapState,mapActions,mapGetters } from 'vuex';
 import { upLoads,resetUser,resetUserPic} from '../utils/api';
-import { BASE_URL, toggleModal } from '../utils/tools'
+import { BASE_URL, toggleModal,searchArr } from '../utils/tools'
 
 export default {
 name:'person',
@@ -123,7 +125,8 @@ name:'person',
         showFrame:false,
         showPolit:false,
         seekService:false,
-        seekServArea:false
+        seekServArea:false,
+        isLoading:true
     };
   },
 
@@ -131,10 +134,11 @@ name:'person',
         HeadBar,
         CitySelector,
         Picker,
-        ServicePicker
+        ServicePicker,
+        Loading
     },
     computed:{
-        ...mapState('user',['userInfo','serviceTypes','servAreas']),
+        ...mapState('user',['userInfo','serviceTypes','servAreas','cityDatas']),
         ...mapGetters('user',['educations','politicls']),
         politName(){
             let name="";
@@ -173,10 +177,64 @@ name:'person',
                 }
             })
             return name;
-        }
+        },
+        cityName:{
+            get(){
+                if(JSON.stringify(this.userInfo)!='{}'){
+                    const { areaid } =this.userInfo;
+                    let prName="";
+                    let ciName="";
+                    let diName="";
+                    let curCity={};
+                    let curDist={};
+                    let curProv={};
+                    this.cityDatas.forEach((pro,i)=>{
+                        if(pro.childAreaDtos&&pro.childAreaDtos.length){
+                            pro.childAreaDtos.forEach((city,m)=>{
+                                if(city.childAreaDtos&&city.childAreaDtos.length){
+                                    city.childAreaDtos.forEach((area,n)=>{
+                                        if(area.id==areaid){
+                                            curDist=area;
+                                            diName=area.name;
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+
+                    this.cityDatas.forEach((pro,i)=>{
+                        if(pro.childAreaDtos&&pro.childAreaDtos.length){
+                            pro.childAreaDtos.forEach((city,m)=>{
+                                if(city.id==curDist.parentId){
+                                    curCity=city;
+                                    ciName=city.name;
+                                }
+                            })
+                        }
+                    })
+                    
+                    this.cityDatas.forEach((pro,i)=>{
+                        if(pro.id==curCity.parentId){
+                            curProv=pro;
+                            prName=pro.name;
+                        }
+                    })
+                    if(areaid){
+                        return `${prName} / ${ciName} / ${diName}`;
+                    }else{
+                        return '';
+                    }
+                    
+                }
+            },
+            set(newVal){
+                
+            }
+        }      
     },
     methods: {
-        ...mapActions('user',['req_restUserPic','req_getServices','req_backgrounds','req_servAreas']),
+        ...mapActions('user',['req_restUserPic','req_getServices','req_backgrounds','req_servAreas','req_citys']),
         openFrame(type){
             if(type==='educa'){
                 this.showFrame=true;
@@ -187,8 +245,6 @@ name:'person',
             }else{
                 this.seekServArea=true;
             }
-            
-            
         },
         closeFrame(type){
             if(type==='educa'){
@@ -218,8 +274,7 @@ name:'person',
             this.seekServArea=false;
             this.userInfo.servicearea=item.dictionaryId;
         },
-        choosePic(type){
-            
+        choosePic(type){  
             switch(type){
                 case 'head':
                     this.$refs.picFile.dispatchEvent(new MouseEvent('click'));
@@ -231,7 +286,7 @@ name:'person',
             this.isShowAddr=true;
         },
         getAddr(e){
-            console.log(e.target.value,e.target.getAttribute('codeStr'))
+            this.userInfo.areaid=e.target.getAttribute('codeStr').slice(14,20);
             this.isShowAddr= false;
         },
         showService(){
@@ -289,12 +344,12 @@ name:'person',
         },
         saveUser(){
             const { idcardbackurl,idcardfronturl,realName,userNick,email,idcardno,
-            address,politicallevel,education,servicetype,servicearea } =this.userInfo;
+            address,politicallevel,education,servicetype,servicearea,areaid } =this.userInfo;
 
             this.isSaved=true;
             
             resetUser({ idCardBackUrl:idcardbackurl,idCardFrontUrl:idcardfronturl,realName,email,idcardno,address,
-            nickname:userNick,politicallevel,education,servicetype,servicearea}).then(data=>{
+            nickname:userNick,politicallevel,education,servicetype,servicearea,areaId:areaid}).then(data=>{
                 if(data.state==200){
                     toggleModal("保存成功");
                     setTimeout(()=>{
@@ -303,10 +358,18 @@ name:'person',
                     
                 }
             });
+        },
+        getCityDatas(){
+            this.req_citys(data=>{
+                if(data.state!==200){
+                   toggleModal(data.message);
+                }
+            })
         }
     },
     created(){
         this.req_getServices((data)=>{
+            this.isLoading=false;
             if(data.state!==200){
                 toggleModal(data.message);
             }
@@ -321,6 +384,10 @@ name:'person',
                 toggleModal(data.message);
             }
         })
+
+        if(!localStorage.getItem('cityDatas')){
+            this.getCityDatas()
+        }
         
     }
     

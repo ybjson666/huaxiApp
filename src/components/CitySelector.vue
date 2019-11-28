@@ -5,16 +5,14 @@
 </template>
 <script>
   import Picker from '../utils/pickr'
-  import dat from '../utils/cityData'
+  // import dat from '../utils/cityData'
   import "../assets/css/picker.css"
   export default {
     name: 'picker',
     props: {
-      datas: {
+      cityDatas: {
         type: Array,
-        default () {
-          return dat
-        }
+        default:[]
       },
       column: {
         type: Number,
@@ -37,14 +35,14 @@
     methods: {
       render() {
         const _this = this
-        this.picker = new Picker()
+        this.picker = new Picker();
         this.picker.init({
           'trigger': `#${this.idName}`,
           'keys': {
             id: 'id',
             name: 'name'
           },
-          'data': _this.datas,
+          'data': _this.cityDatas,
           'column': _this.column
         })
       }

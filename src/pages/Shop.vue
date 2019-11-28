@@ -27,7 +27,13 @@
               @scrolling="scrolling" 
               @touchEnded="touchEnded" 
               :pullUpMsg="pullUpMsg"
+              :pullDownMsg="pullDownMsg"
               :isPullUpLoading="isPullUpLoading"
+              :isPullDownLoading="isPullDownLoading"
+              :isFresh="isFresh"
+              :isShowUp="isShowUp"
+              :hasData="hasData"
+
           >
           <ul class="shop-list">
               <li v-for="(item,index) in shopList" :key="index" @click="goInfo(item.id)">
@@ -63,8 +69,13 @@ name:'shop',
       banners:[require('../assets/images/1.png'),require('../assets/images/2.png'),
       require('../assets/images/3.png'),require('../assets/images/4.png')],
       curScore:"4578.00",
-      pullUpMsg:"上拉加载更多",
+      isFresh:false,
+      isShowUp:true,
+      hasData:false,
       isPullUpLoading:false,
+      isPullDownLoading:false,
+      pullUpMsg:"上拉加载更多",
+      pullDownMsg:"下拉刷新",
       page:1,
       shopList:[
         {
@@ -152,7 +163,10 @@ name:'shop',
     refreshData(){
       setTimeout(()=>{
           this.isPullDownLoading=false;
-          this.isFresh=true;     
+          this.isFresh=true;
+          setTimeout(()=>{
+              this.isFresh=false;
+          },1000)     
       },1000)
     },
     loadMore(){

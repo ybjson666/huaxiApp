@@ -63,7 +63,8 @@
                 <li>
                     <span class="skip-icon fl"><img src="../assets/images/shopping.png" alt=""></span>
                     <span class="skip-name fl">积分商城</span>
-                    <router-link to="/shop" class="right-icon fr"><img src="../assets/images/into.png" alt=""></router-link>
+                    <a href="http://www.baidu.com" class="right-icon fr"><img src="../assets/images/into.png" alt=""></a>
+                    <!-- <router-link to="/shop" class="right-icon fr"><img src="../assets/images/into.png" alt=""></router-link> -->
                     <div class="cl"></div>
                 </li>
             </ul>
@@ -79,7 +80,7 @@
               <li>
                   <span class="skip-icon fl"><img src="../assets/images/retreat.png" alt=""></span>
                   <span class="skip-name fl">退出登录</span>
-                  <router-link to="" class="right-icon fr"><img src="../assets/images/into.png" alt=""></router-link>
+                  <span class="right-icon fr" @click="loginOut"><img src="../assets/images/into.png" alt=""></span>
                   <div class="cl"></div>
               </li>
           </ul>
@@ -99,15 +100,16 @@ name:'center',
   computed:{
       ...mapState('user',['userInfo'])
   },
-  mounted(){
-      
-  },
   methods: {
       goVoluntee(){
           this.$router.push('/aplyVolunte')
       },
       goSign(){
           this.$router.push('/sign')
+      },
+      loginOut(){
+          localStorage.removeItem('appToken');
+          this.$router.replace('/login');
       }
   }
 }

@@ -1,6 +1,6 @@
 import { getWishs,getWishInfo} from '../../utils/api';
 
-import { SET_WISH_list,SET_DEFAULT_WISH_list,SET_WISH} from './mutation_types';
+import { SET_WISH_LIST,SET_DEFAULT_WISH_LIST,SET_WISH} from './mutation_types';
 
 export default {
     async req_Wish({commit},[data,isFresh,callBack]){//获取心愿列表
@@ -8,9 +8,9 @@ export default {
         if(res.state===200){
             const list=res.data;
             if(isFresh){
-                commit(SET_DEFAULT_WISH_list,list);
+                commit(SET_DEFAULT_WISH_LIST,list);
             }else{
-                commit(SET_WISH_list,list);
+                commit(SET_WISH_LIST,list);
             }
             
         }

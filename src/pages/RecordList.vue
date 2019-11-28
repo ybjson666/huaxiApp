@@ -26,6 +26,7 @@
                 </li>
             </ul>
           </Scroller>
+          <Loading v-show="isLoading"/>
           <p class="none-data" v-if="!convertList.length">暂无数据</p>
       </div>
   </div>
@@ -34,6 +35,7 @@
 <script>
 import HeadBar from '@/components/HeadBar'
 import Scroller from '@/components/Scroller'
+import Loading from '@/components/Loading'
 import { mapActions,mapState } from 'vuex'
 import { pageSize, toggleModal } from '../utils/tools'
 import moment from 'moment';
@@ -48,26 +50,31 @@ name:'record',
         isPullDownLoading:false,
         pullUpMsg:"上拉加载更多",
         pullDownMsg:"下拉刷新",
-       pageno:1
+        pageno:1,
+        isLoading:false,
     };
   },
 
   components: {
       HeadBar,
-      Scroller
+      Scroller,
+      Loading
   },
   created(){
+      this.isLoading=true;
       this.req_convert([{pageno:this.pageno,pageSize},true,(data)=>{
         if(data.state===200){
             if(data.data &&data.data.length){
                 this.pageno++;
-                this.$nextTick(()=>{
-                    setTimeout(()=>{
-                        this.hasData=this.convertList.length>=pageSize?true:false; 
-                    },1000);
-                })
             }
+            this.$nextTick(()=>{
+                setTimeout(()=>{
+                    this.hasData=this.convertList.length>=pageSize?true:false;
+                    this.isLoading=false; 
+                },1000);
+            })
         }else{
+            this.isLoading=false;
             toggleModal(data.message)
         }
       }])

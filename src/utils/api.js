@@ -4,7 +4,7 @@ import {$post,$get} from './request';
 
 /*获取验证码*/
 export const getVerifyCode=(phone)=>{
-    return $get(`/customer/api/registersms?phone=${phone}&tenantid=default&stag=A`)
+    return $get(`/customer/api/passbacksms?phone=${phone}&tenantid=default&stag=A`)
 }
 /*注册*/
 export const regist= (data)=>{
@@ -106,4 +106,12 @@ export const applyVolun=async (data)=>{
 /*个人中心我的活动*/
 export const actvList=async (data)=>{
     return $post(`/activityRecruit/api/myActivity`,data)
+}
+/*行政区划*/
+export const getCitys=async ()=>{
+    return $post(`/other/api/areas`)
+}
+/*找回密码*/
+export const findPwds=async (data)=>{
+    return $post(`/customer/api/rpass`,data)
 }
