@@ -18,19 +18,20 @@
                       <img :src="item.cover" alt="">
                     </div>
                     <div class="hunger-infos">
-                      <h2>{{item.activityname}}</h2>
+                      <h2>{{item.activityname | curtWords(9)}}</h2>
                       <div class="hunger-bottom">
                           <p>
-                            <span class="row-icon"><img src="../assets/images/time.png" alt=""></span>
-                            <span>{{item.activitystarttime}}</span>
+                            <span class="row-icon time-icon"><img src="../assets/images/time.png" alt=""></span>
+                            <span>{{item.subdate}}</span>
                           </p>
                           <p>
-                            <span class="row-icon"><img src="../assets/images/user.png" alt=""></span>
-                            <span>{{item.hascount}}/{{item.recruitcount}}</span>
+                            <span class="row-icon num-icon"><img src="../assets/images/user.png" alt=""></span>
+                            <span v-if="item.recruitcount==0">{{item.hascount}}/不限制</span>
+                            <span v-else>{{item.hascount}}/{{item.recruitcount}}</span>
                           </p>
                           <p>
-                            <span class="row-icon"><img src="../assets/images/address.png" alt=""></span>
-                            <span>{{item.address}}</span>
+                            <span class="row-icon addr-icon"><img src="../assets/images/address.png" alt=""></span>
+                            <span>{{item.address | curtWords(12)}}</span>
                           </p>
                       </div>
                     </div>
@@ -77,7 +78,7 @@
           </div>
            
         </div>
-        <Loading v-show="isLoading"/>
+        <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
     </div>
   </div>
 </template>
@@ -87,7 +88,7 @@ import HeadBar from '@/components/HeadBar'
 import Navgitor from '@/components/Navgitor'
 import Loading from '@/components/Loading'
 import Captions from '@/components/Captions'
-import { toggleModal } from '../utils/tools';
+import { toggleModal,isEn } from '../utils/tools';
 import { mapActions,mapState } from 'vuex'
 export default {
 name:'hunger',
@@ -139,6 +140,14 @@ name:'hunger',
     Captions,
     Loading
   },
+  beforeRouteEnter (to, from, next) {
+    if(from.name=='actvInfo'){
+        to.meta.keepAlive=true
+    }else{
+      to.meta.keepAlive=false
+    }
+    next()
+  },
   computed:{
     ...mapState('volunteer',{
       votList:state=>state.votList
@@ -147,10 +156,28 @@ name:'hunger',
   created(){
     this.req_Vots([{isAll:'N',state:0,areaId:'N'},true,data=>{
       this.isLoading=false;
-      if(data.state!==200){
-        toggleModal(data.message)
+      if(data.state!==200&&data.state!==700004){
+            toggleModal(data.message);
+      }else if(data.state===700004){
+        toggleModal(data.message);
+        setTimeout(()=>{
+          this.$router.push('/login');
+        },1000);
       }
     }])
+  },
+  filters:{
+    // curtWords(val,num){
+    //   if(!isEn.test(val)){
+    //     if(val.length>num){
+    //       return val.slice(0,num)+'...';
+    //     }else{
+    //       return val;
+    //     }
+    //   }else{
+    //     return val;
+    //   }
+    // }
   },
   methods: {
     ...mapActions('volunteer',['req_Vots']),
@@ -168,10 +195,11 @@ name:'hunger',
 .hunger-container{
     height: 100%;
     .hunger-contents{
-      height: calc(100% - 2rem);
+      height: calc(100% - 2.5rem);
         background: #f0f0f0;
         overflow-y: scroll;
         position: relative;
+        -webkit-overflow-scrolling: touch;
         .top-bar{
             height: 6rem;
         }
@@ -184,7 +212,7 @@ name:'hunger',
             z-index: 5;
             border-radius: 3px;
             box-shadow: 0 0 10px 2px #ddd;
-            padding: .8rem;
+            padding: 1rem;
             box-sizing: border-box;
         }
         .block-head{
@@ -222,15 +250,15 @@ name:'hunger',
                     box-sizing: border-box;
                   }
                   .red{
-                    background: url('../assets/images/bg2.png') no-repeat;
+                    background: url('../assets/images/bg4.png') no-repeat;
                     background-size: 100% 100%;
                   }
                   .orange{
-                    background: url('../assets/images/bg3.png')no-repeat;
+                    background: url('../assets/images/bg2.png')no-repeat;
                     background-size: 100% 100%;
                   }
                   .gray{
-                    background: url('../assets/images/bg4.png')no-repeat;
+                    background: url('../assets/images/bg3.png')no-repeat;
                     background-size: 100% 100%;
                   }
                   .hunger-pic{
@@ -245,27 +273,36 @@ name:'hunger',
                     height: 5rem;
                     position: relative;
                     h2{
-                      font-size: .75rem;
-                      color: #000;
+                      font-size: .85rem;
+                      color:rgb(26,26,26);
+                      font-weight: normal;
                     }
                     .hunger-bottom{
                       position: absolute;
                       width: 100%;
                       left: 0;
                       bottom: 0;
+                      font-size: .65rem;
+                      color: rgb(127,127,127);
                         p{
                           font-size: .6rem;
-                          margin-bottom: .1rem;
+                          margin-bottom: .2rem;
                           &:last-child{
                             margin: 0;
                           }
-                          span{
-                            vertical-align: middle;
-                          }
                           .row-icon{
                             display: inline-block;
-                            width: .6rem;
                             margin-right: .3rem;
+                            vertical-align: middle;
+                          }
+                          .time-icon{
+                            width: .7rem;
+                          }
+                          .num-icon{
+                            width: .8rem;
+                          }
+                          .addr-icon{
+                            width: .6rem;
                           }
                         }
                       }
@@ -284,7 +321,7 @@ name:'hunger',
             }
         }
         .seek-more{
-          margin-top: .2rem;
+          margin-top: .3rem;
           height: 1.5rem;
           text-align: right;
           padding: 0 .5rem;

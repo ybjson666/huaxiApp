@@ -8,19 +8,26 @@ const routes=[
   {
     path:'/login',
     name:'login',
-    component:()=>import('@/pages/Login.vue')
+    component:()=>import('@/pages/Login.vue'),
+    meta:{
+      keepAlive:false
+    }
   },
   {
     path:'/regist',
     name:'regist',
-    component:()=>import('@/pages/Regist.vue')
+    component:()=>import('@/pages/Regist.vue'),
+    meta:{
+      keepAlive:false
+    }
   },
   {
     path:'/aplyVolunte',
     name:'AplyVolunteer',
     component:()=>import('@/pages/AplyVolunteer.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -28,7 +35,8 @@ const routes=[
     name:'shop',
     component:()=>import('@/pages/Shop.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -36,7 +44,8 @@ const routes=[
     name:'shopInfo',
     component:()=>import('@/pages/ShopInfo.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -44,7 +53,8 @@ const routes=[
     name:'scoreInfo',
     component:()=>import('@/pages/ScoreInfo.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -52,7 +62,8 @@ const routes=[
     name:'record',
     component:()=>import('@/pages/RecordList.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -60,7 +71,8 @@ const routes=[
     name:'volunTeam',
     component:()=>import('@/pages/volunTeam.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -68,7 +80,8 @@ const routes=[
     name:'message',
     component:()=>import('@/pages/Message.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -76,7 +89,8 @@ const routes=[
     name:'active',
     component:()=>import('@/pages/Actv.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -84,7 +98,8 @@ const routes=[
     name:'sign',
     component:()=>import('@/pages/Sign.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -92,7 +107,8 @@ const routes=[
     name:'appoint',
     component:()=>import('@/pages/Appointment.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -100,7 +116,8 @@ const routes=[
     name:'wish',
     component:()=>import('@/pages/Wish.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -108,7 +125,8 @@ const routes=[
     name:'person',
     component:()=>import('@/pages/PersonInfo.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -116,7 +134,8 @@ const routes=[
     name:'phone',
     component:()=>import('@/pages/ModifyPhone.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -124,7 +143,8 @@ const routes=[
     name:'password',
     component:()=>import('@/pages/ModifyPwd.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -132,7 +152,8 @@ const routes=[
     name:'findPwd',
     component:()=>import('@/pages/FindPwd.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:false,
+      keepAlive:false
     }
   },
   {
@@ -140,7 +161,8 @@ const routes=[
     name:'recruit',
     component:()=>import('@/pages/Recruit.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:true
     }
   },
   {
@@ -148,7 +170,8 @@ const routes=[
     name:'mien',
     component:()=>import('@/pages/Mien.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -156,7 +179,9 @@ const routes=[
     name:'actvInfo',
     component:()=>import('@/pages/ActvInfo.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:true,
+      lastPath:""
     }
   },
   {
@@ -164,7 +189,8 @@ const routes=[
     name:'apply',
     component:()=>import('@/pages/Apply.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:true
     }
   },
   {
@@ -172,7 +198,8 @@ const routes=[
     name:'publish',
     component:()=>import('@/pages/Publish.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -180,7 +207,8 @@ const routes=[
     name:'subscribe',
     component:()=>import('@/pages/Subscribe.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -188,7 +216,8 @@ const routes=[
     name:'sourceList',
     component:()=>import('@/pages/SourceList.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -196,7 +225,8 @@ const routes=[
     name:'sourceInfo',
     component:()=>import('@/pages/SourceInfo.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -204,7 +234,8 @@ const routes=[
     name:'wishList',
     component:()=>import('@/pages/WishList.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
@@ -212,7 +243,9 @@ const routes=[
     name:'wishInfo',
     component:()=>import('@/pages/WishInfo.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:true,
+      lastPath:""
     }
   },
   {
@@ -220,20 +253,25 @@ const routes=[
     name:'voteList',
     component:()=>import('@/pages/VoteList.vue'),
     meta:{
-      requireAuth:true
+      requireAuth:true,
+      keepAlive:false
     }
   },
   {
     path:'/main',
     name:'mains',
     component:()=>import('@/pages/Main.vue'),
+    meta:{
+      keepAlive:false
+    },
     children:[
       {
         path:'/main/center',
         name:'center',
         component:()=>import('@/pages/Center.vue'),
         meta:{
-          requireAuth:true
+          requireAuth:true,
+          keepAlive:false
         }
       },
       {
@@ -241,7 +279,8 @@ const routes=[
         name:'hunger',
         component:()=>import('@/pages/Hunger.vue'),
         meta:{
-          requireAuth:true
+          requireAuth:true,
+          keepAlive:true
         }
       },
       {
@@ -249,13 +288,17 @@ const routes=[
         name:'desire',
         component:()=>import('@/pages/Desire.vue'),
         meta:{
-          requireAuth:true
+          requireAuth:true,
+          keepAlive:true
         }
       },
       {
         path:'/main/:id',
         name:'blank',
-        component:()=>import('@/pages/Blank.vue')
+        component:()=>import('@/pages/Blank.vue'),
+        meta:{
+          keepAlive:false
+        }
       },
       {
         path:'/main',

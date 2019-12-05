@@ -51,14 +51,14 @@ name:'password',
             }else if(!newpassword){
                 toggleModal('请输入新密码！');
                 return;
-            }else if(!reg_pwd.test(newpassword)){
-                toggleModal('密码格式错误！');
+            }else if(newpassword.trim().length<6){
+                toggleModal('密码长度不能小于6位');
                 return;
             }else if(!repassword){
                 toggleModal('请再次输入新密码！');
                 return;
-            }else if(!reg_pwd.test(repassword)){
-                toggleModal('密码格式错误！');
+            }else if(repassword.trim().length<6){
+                toggleModal('密码长度不能小于6位');
                 return;
             }else if(newpassword !== repassword){
                 toggleModal('两次密码不一致！');
@@ -69,13 +69,12 @@ name:'password',
             modifyPwd({ password,newpassword,repassword }).then((data)=>{
                if(data.state===200){
                    toggleModal("修改成功");
-                   this.isUse=fale;
-                   this.password="";
-                   this.newpassword="";
-                   this.repassword="";
+                   setTimeout(()=>{
+                      this.$router.go(-1);
+                   },1000)
                }else{
                    toggleModal(data.message);
-                   this.isUse=fale;
+                   this.isUse=false;
                }
             })
         }
@@ -87,27 +86,33 @@ name:'password',
 .password-conatiner{
     height: 100%;
     .password-contents{
-        height: calc(100% - 2rem);
+        height: calc(100% - 2.5rem);
         background: #f0f0f0;
-        padding-top:.8rem;
+        padding-top:1rem;
         box-sizing: border-box;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
         .password-box{
-            padding: .5rem;
+            padding:0 .75rem;
             padding-bottom: 0;
             box-sizing: border-box;
             .rows{
                 display: flex;
                 border-bottom: 1px solid #f5f5f5;
-                height: 2rem;
+                padding: 1rem 0 ;
                 box-sizing: border-box;
                 .label{
-                    width: 4rem;
-                    line-height: 2rem;
-                    color: #000;
-                    font-size: .75rem;
+                    width: 3.5rem;
+                    color: rgb(26,24,29);
+                    font-size: .85rem;
+                    margin-right: 2.7rem;
                 }
                 .rows-input{
                     flex: 1;
+                    font-size: .75rem;
+                }
+                .rows-input::-webkit-input-placeholder{
+                    color: rgb(153,153,153);
                     font-size: .75rem;
                 }
                 .code{
@@ -118,7 +123,7 @@ name:'password',
         }
         .modify-btn{
             margin: 0 auto;
-            margin-top: 3rem;
+            margin-top: 4.45rem;
         } 
     }
 }

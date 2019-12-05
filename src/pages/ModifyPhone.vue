@@ -54,13 +54,12 @@ name:'phone',
 .phone-container{
     height: 100%;
     .phone-contents{
-        height: calc(100% - 2rem);
+        height: calc(100% - 2.5rem);
         background: #f0f0f0;
         padding-top:.8rem;
         box-sizing: border-box;
         .phone-box{
-            padding: .5rem;
-            padding-bottom: 0;
+            padding:0 .5rem;
             box-sizing: border-box;
             .rows{
                 display: flex;
@@ -76,10 +75,12 @@ name:'phone',
                 .rows-input{
                     flex: 1;
                     font-size: .75rem;
+                    line-height: 2rem;
                 }
                 .code{
                     color: #ff0000;
                     width: 4rem;
+                    font-size: .75rem;
                 }
             }
         }

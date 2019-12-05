@@ -166,9 +166,9 @@ name:'sourceList',
     .right-btn{
         position: absolute;
         right: .5rem;
-        top:0;
+        top:0rem;
         color: #fff;
-        line-height: 2rem;
+        line-height: 2.5rem;
     }
     .sele-bar{
       line-height: 2.5rem;
@@ -184,7 +184,7 @@ name:'sourceList',
       }
     }
     .sourceList-contents{
-        height: calc(100% - 4.5rem);
+        height: calc(100% - 5rem);
         .sourceListWraper{
           height: 100%;
           position: relative;
@@ -209,7 +209,7 @@ name:'sourceList',
                   flex: 1;
                   margin-left: .5rem;
                   h2{
-                    font-size: .75rem;
+                    font-size: .85rem;
                     font-weight: normal;
                   }
                   .source-bottom{
@@ -220,13 +220,14 @@ name:'sourceList',
                     p{
                       line-height: 1rem;
                       color: #808080;
+                      font-size: .75rem;
                     }
                   }
                 }
               }
               .li-bar{
                 height: .3rem;
-                background: #f0f0f0;
+                background: #f5f5f5;
                 margin-top: .5rem;
               }
             }

@@ -6,61 +6,67 @@
     <div class="volunteer-contents">
         <div class="rows">
           <span class="label">姓名</span>
-          <input type="text" class="row-input" placeholder="请填写真实姓名" v-model="userInfo.realName" readonly>
+          <input type="text" class="row-input" placeholder="请填写真实姓名" v-model="userInfo.realName" readonly/>
         </div>
         <div class="rows">
           <span class="label">身份证号码</span>
-          <input type="text" class="row-input" placeholder="请填写身份证号码" v-model="userInfo.idcardno" readonly>
+          <input type="text" class="row-input" placeholder="请填写身份证号码" v-model="userInfo.idcardno" readonly/>
         </div>
         <div class="upload-row">
           <p class="upload-tags">身份证照片</p>
           <div class="upload-wraps">
             <div class="upload-item face-item">
-              <img :src="userInfo.idcardfronturl" alt="" v-if="userInfo.idcardfronturl">
-              <img src="../assets/images/card1.png" alt="" v-else>
+              <img :src="userInfo.idcardfronturl" alt="" v-if="userInfo.idcardfronturl" />
+              <img src="../assets/images/card1.png" alt="" v-else />
             </div>
             <div class="upload-item ">
-              <img :src="userInfo.idcardbackurl" alt="" v-if="userInfo.idcardbackurl">
-              <img src="../assets/images/card2.png" alt="" v-else>
+              <img :src="userInfo.idcardbackurl" alt="" v-if="userInfo.idcardbackurl" />
+              <img src="../assets/images/card2.png" alt="" v-else />
             </div>
           </div>
         </div>
         <div class="arrow-row">
           <span class="label">政治面貌</span>
-          <input type="text" class="row-input" placeholder="请选择政治面貌" v-model="politName" readonly >
+          <input type="text" class="row-input" placeholder="请选择政治面貌" v-model="politName" readonly />
+          <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
         </div>
         <div class="arrow-row">
           <span class="label">学历</span>
-          <input type="text" class="row-input" placeholder="请选择学历" v-model="educaName" readonly>
+          <input type="text" class="row-input" placeholder="请选择学历" v-model="educaName" readonly/>
+          <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
         </div>
         <div class="arrow-row" >
           <span class="label">服务类型</span>
-          <input type="text" class="row-input" placeholder="请选择服务类型" v-model="serviceName" readonly>
+          <input type="text" class="row-input" placeholder="请选择服务类型" v-model="serviceName" readonly/>
+          <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
         </div>
         <div class="arrow-row">
           <span class="label">服务区域</span>
-          <input type="text" class="row-input" placeholder="请选择服务区域" v-model="servAreaName" readonly>
+          <input type="text" class="row-input" placeholder="请选择服务区域" v-model="servAreaName" readonly/>
+          <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
         </div>
         <div class="rows">
           <span class="label">家庭住址</span>
-          <input type="text" class="row-input" placeholder="请填写家庭住址" v-model="userInfo.address" readonly>
+          <input type="text" class="row-input" placeholder="请填写家庭住址" v-model="userInfo.address" readonly/>
         </div>
         <div class="rows">
           <span class="label">电子邮箱</span>
-          <input type="text" class="row-input" placeholder="请填写邮箱" v-model="userInfo.email" readonly>
+          <input type="text" class="row-input" placeholder="请填写邮箱" v-model="userInfo.email" readonly/>
         </div>
         <div class="rows">
           <span class="label">联系电话</span>
-          <input type="text" class="row-input" placeholder="请填写联系电话" v-model="userInfo.userMobile" readonly>
+          <input type="text" class="row-input" placeholder="请填写联系电话" v-model="userInfo.userMobile" readonly/>
         </div>
-        <p class="info"><em>*信息不完善，请先到个人信息去完善</em></p>
-        <button class="sub-btn btn" @click="apply" :disabled="isUse" :class="{btnGray:isUse}">提交</button>
+        <p class="info">*信息不完善，请先到个人信息去完善</p>
+        <button class="sub-btn btn" @click="apply" :disabled="isUse" :class="{btnGray:isUse}">提交申请</button>
+        <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
     </div>
   </div>
 </template>
 
 <script>
 import HeadBar from '@/components/HeadBar'
+import Loading from '@/components/Loading'
 import { applyVolun} from '../utils/api'
 import { toggleModal,BASE_URL } from '../utils/tools'
 import { mapState,mapActions,mapGetters } from 'vuex';
@@ -68,27 +74,55 @@ export default {
 name:'AplyVolunteer',
   data () {
     return {
-      isUse:false
+      isUse:false,
+      isLoading:true
     };
   },
 
   components: {
     HeadBar,
+    Loading
   },
   created(){
     this.req_getServices((data)=>{
-        if(data.state!==200){
-            toggleModal(data.message);
+        if(data.state!==200&&data.state!==700004){
+          toggleModal(data.message);
+        }else if(data.state===700004){
+          toggleModal(data.message);
+          setTimeout(()=>{
+              this.$router.push('/login');
+          },1000);
         }
     })
     this.req_backgrounds((data)=>{
-        if(data.state!==200){
-            toggleModal(data.message);
+        if(data.state!==200&&data.state!==700004){
+              toggleModal(data.message);
+        }else if(data.state===700004){
+          toggleModal(data.message);
+          setTimeout(()=>{
+              this.$router.push('/login');
+          },1000);
         }
     })
     this.req_servAreas((data)=>{
-        if(data.state!==200){
-            toggleModal(data.message);
+        if(data.state!==200&&data.state!==700004){
+              toggleModal(data.message);
+        }else if(data.state===700004){
+          toggleModal(data.message);
+          setTimeout(()=>{
+              this.$router.push('/login');
+          },1000);
+        }
+    })
+    this.req_getUser(data=>{
+        this.isLoading=false;
+        if(data.state!==200&&data.state!==700004){
+          toggleModal(data.message);
+        }else if(data.state===700004){
+          toggleModal(data.message);
+          setTimeout(()=>{
+            this.$router.push('/login');
+          },1000);
         }
     })
   },
@@ -135,62 +169,68 @@ name:'AplyVolunteer',
     }
   },
   methods: {
-    ...mapActions('user',['req_restUserPic','req_getServices','req_backgrounds','req_servAreas']),
+    ...mapActions('user',['req_restUserPic','req_getServices','req_backgrounds','req_servAreas','req_getUser']),
     apply(){
-      const { realName,idcardno,idcardfronturl,idcardbackurl,politicallevel,servicearea,servicetype,userMobile,email,education,address }=this.userInfo;
-
-      if(!realName){
+      const { realName,idcardno,idcardfronturl,idcardbackurl,politicallevel,education,servicetype,servicearea,address,email,userMobile}=this.userInfo;
+      
+      if(!realName||realName=='undefined'){
         toggleModal('请填写姓名');
         return;
-      }else if(!idcardno){
+      }else if(!idcardno||idcardno=='undefined'){
         toggleModal('请填写身份证号码');
         return;
-      }
-      else if(!idcardfronturl){
+      }else if(!idcardfronturl||idcardfronturl=='undefined'){
         toggleModal('请上传身份证正面照片');
         return;
-      }
-      else if(!idcardbackurl){
+      }else if(!idcardbackurl||idcardbackurl=='undefined'){
         toggleModal('请上传身份证背面照片');
         return;
-      }
-      else if(!politicallevel){
+      }else if(!politicallevel||politicallevel=='undefined'){
         toggleModal('请选择政治面貌');
         return;
-      }
-      else if(!education){
+      }else if(!education||education=='undefined'){
         toggleModal('请选择学历');
         return;
-      }
-      else if(!servicetype){
+      }else if(!servicetype||servicetype=='undefined'){
         toggleModal('请选择服务类型');
         return;
-      }
-      else if(!servicearea){
+      }else if(!servicearea||servicearea=='undefined'){
         toggleModal('请选择服务区域');
         return;
-      }
-      else if(!address){
+      }else if(!address||address=='undefined'){
         toggleModal('请填写家庭住址');
         return;
-      }
-      else if(!email){
+      }else if(!email||email=='undefined'){
         toggleModal('请填写邮箱');
         return;
-      }
-      else if(!userMobile){
+      }else if(!userMobile||userMobile=='undefined'){
         toggleModal('请填写手机号');
         return;
       }
 
-      this.isUse=true
+      this.isUse=true;
       applyVolun({customername:realName,idcardno,servicetype,servicearea,email,education,politicallevel,address,idcardfronturl,idcardbackurl}).then(data=>{
         if(data.state===200){
           toggleModal("申请成功");
           this.isUse=false;
+          setTimeout(()=>{
+              this.$router.go(-1);
+          },1000)
         }else{
           toggleModal(data.message);
           this.isUse=false;
+        }
+      })
+    }
+  },
+  watch:{
+    userInfo(val){
+      const { realName,idcardno,idcardfronturl,idcardbackurl,politicallevel,education,servicetype,servicearea,address,email,userMobile}=val;
+      const user={ realName,idcardno,idcardfronturl,idcardbackurl,politicallevel,education,servicetype,servicearea,address,email,userMobile}
+      Object.keys(user).forEach(key=>{
+        if(!user[key]){
+          this.isUse=true;
+          return;
         }
       })
     }
@@ -204,48 +244,56 @@ name:'AplyVolunteer',
   .header-section{
     position: fixed;
     width: 100%;
+    left: 0;
+    top:0;
+    z-index: 50;
   }
   .volunteer-contents{
     background: #fff;
-    padding: .5rem;
+    padding: 1.5rem .75rem;
+    padding-bottom: 0;
     box-sizing: border-box;
     height: 100%;
     padding-top: 3rem;
     overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
     .rows{
-      height: 2.5rem;
-      line-height: 2.5rem;
       border-bottom: 1px solid #f5f5f5;
       display: flex;
+      padding: 1rem 0;
       box-sizing: border-box;
       .label{
-        margin-right: .8rem;
-        flex: 1;
+        width: 5.45rem;
+        font-size: .85rem;
       }
       .row-input{
-        width: 13rem;
+        flex: 1;
+      }
+      .row-input::-webkit-input-placeholder{
+        color: rgb(153,153,153);
+        font-size: .75rem;
       }
     }
     .arrow-row{
-      height: 2.5rem;
-      line-height: 2.5rem;
       border-bottom: 1px solid #f5f5f5;
       display: flex;
+      padding: 1rem 0;
       box-sizing: border-box;
       position: relative;
       .label{
-        margin-right: .8rem;
-        flex: 1;
+        width: 5.45rem;
+        font-size: .85rem;
       }
       .row-input{
-        width: 13rem;
+        flex: 1;
       }
       .arrow{
         position: absolute;
         display: block;
         width: .5rem;
         right: .5rem;
-        top:.75rem;
+        top:1rem;
       }
     }
     .upload-row{

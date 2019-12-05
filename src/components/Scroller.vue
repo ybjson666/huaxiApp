@@ -88,6 +88,7 @@ export default {
     height: 100%;
     width: 100%;
     overflow: hidden;
+    z-index: 20;
     .pull-down{
         height: 2.6rem;
         position: absolute;
@@ -96,8 +97,9 @@ export default {
         top:-2.6rem;
     }
     .pull-down ,.pull-up{
-        background: rgba(0,0,0,.7);
-        color: orange;
+        background:#fff;
+        color: #ccc;
+        background: #fafafa;
     }
     .pull-down-icon, .pull-up-icon{
         display: flex;
@@ -121,7 +123,7 @@ export default {
         width: 100%;
         left: 0;
         top:0;
-        z-index: 10;
+        z-index: 100;
     }
 }
 </style>

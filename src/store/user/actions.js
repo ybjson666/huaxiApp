@@ -11,8 +11,8 @@ import { SET_USER,
 function assignUser(result){
     const {sex,sourceType,userMobile,userName,userNick,userPic,userToken,id,groupName,groupId,birthday,realName}=result.r;
     const user_r={sex,sourceType,userMobile,userName,userNick,userPic,userToken,id,groupName,groupId,birthday,realName}
-    const { education,email,areaid,idcardno,politicallevel,servicetype,servicearea,address,idcardfronturl,idcardbackurl,isvolunteer,customerid }=result.l;
-    const user_l={ education,email,areaid,idcardno,politicallevel,servicetype,servicearea,address,idcardfronturl,idcardbackurl,isvolunteer,customerid }
+    const { education,email,areaid,idcardno,politicallevel,servicetype,servicearea,address,idcardfronturl,idcardbackurl,isvolunteer,customerid,state }=result.l;
+    const user_l={ education,email,areaid,idcardno,politicallevel,servicetype,servicearea,address,idcardfronturl,idcardbackurl,isvolunteer,customerid,state }
     return Object.assign({},user_l,user_r);
 }
 

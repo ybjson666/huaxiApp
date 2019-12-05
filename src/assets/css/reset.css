@@ -4,10 +4,11 @@
   }
   html,body{
     height: 100%;
+    background:#fff;
   }
   body{
     font-size: .7rem;
-    color: #000;
+    color: rgb(26,26,26);
   }
   #app{
     height: 100%;
@@ -43,9 +44,28 @@
   input{
     border: none;
     outline: none;
+    background: transparent;
+    filter: alpha(opacity=0);
+    -webkit-appearance: none;
+    border-radius: 0;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+    font-size: .8rem;
+  }
+  textarea{
+    border: none;
+    outline: none;
+    background: transparent;
+    -webkit-appearance: none;
+    border-radius: 0;
+    filter: alpha(opacity=0);
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
   }
   input::-webkit-input-placeholder,textarea::-webkit-input-placeholder {
-    color: #ccc;
+    color: rgb(204,204,204);
+    font-size: .75rem;
+  }
+  input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill{
+    -webkit-box-shadow: 0 0 0px 1000px white inset
   }
   button{
     background: transparent;
@@ -58,7 +78,6 @@
     display: inline-block;
     width: 100%;
     margin: 0 auto;
-    vertical-align: middle;
   }
   .fade-enter-active, .fade-leave-active {
     transition: opacity .3s;
@@ -125,7 +144,7 @@
   line-height: 2rem;
   border-radius: 1rem;
   background: #ff0000;
-  font-size: .8rem;
+  font-size: .85rem;
 }
 
 [v-cloak] {
@@ -133,7 +152,7 @@
 }
 
 .btnGray{
-  background: #f197a4;
+  background: #f197a4!important;
 }
 .locations{
   position: absolute;
@@ -143,4 +162,18 @@
   top:56%;
   color: #999;
   font-size: .8rem;
+}
+.load-txt{
+  color: rgba(0,0,0,.3);
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  display: block;
+  left: 0;
+  top:60%;
+  font-size: .8rem;
+}
+.bar-tip{
+  height: .85rem;
+  background: #f0f0f0;
 }

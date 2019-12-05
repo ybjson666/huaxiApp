@@ -149,7 +149,7 @@ name:'mien',
     height: 100%;
     .mien-contents{
       height: calc(100% - 2rem);
-      background: #f0f0f0;
+      background: #f5f5f5;
       .mien-wraper{
         height: 100%;
         position: relative;
@@ -160,9 +160,9 @@ name:'mien',
             padding: .5rem;
             box-sizing: border-box;
             .title{
-              color: #000;
-              font-size: .75rem;
+              font-size: .85rem;
               margin-bottom: .4rem;
+              font-weight: normal;
             }
             .mien-wraps{
               display: flex;
@@ -181,7 +181,8 @@ name:'mien',
                 height: 5rem;
                 position: relative;
                 .desc{
-                  color: #333;
+                  color: rgb(26,26,26);
+                  font-size: .7rem;
                 }
                 .mien-datas{
                   width: 100%;
@@ -191,10 +192,12 @@ name:'mien',
                   display: flex;
                   .mien-times{
                     flex: 3;
+                    color: rgb(128,128,128);
                   }
                   .scans-wraps{
                     flex: 1;
                     text-align: right;
+                    color: rgb(128,128,128);
                     .scan-icon{
                       width: .8rem;
                       display: inline-block;

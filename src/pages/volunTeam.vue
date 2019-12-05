@@ -183,7 +183,7 @@ name:'volunTeam',
 .volu-container{
     height: 100%;
     .volun-contents{
-        height: calc(100% - 2rem);
+        height: calc(100% - 2.5rem);
         background: #f0f0f0;
         .type-bar{
             height: 2rem;

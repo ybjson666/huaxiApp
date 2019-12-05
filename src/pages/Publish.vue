@@ -2,7 +2,6 @@
   <div class='publish-container'>
     <head-bar title="发布心愿"/>
     <div class="publish-contents">
-      <div class="bar"></div>
       <div class="publish-wraps">
         <div class="rows">
           <p class="row-title">
@@ -18,9 +17,12 @@
             <span class="flower">*</span>
             <span class="row-label">心愿描述</span>
           </p>
-          <p class="row-content">
-            <textarea placeholder="请在此输入心愿描述" v-model="description"></textarea>
-          </p>
+          <div class="row-content desc-content">
+            <textarea placeholder="请在此输入心愿描述" v-model="description" :maxlength="maxLength"></textarea>
+            <div class="max-limit-block" :class="{warn:description.length>=maxLength}">
+              <span>{{description.length}}</span><strong>/</strong><span>{{maxLength}}</span>
+            </div>
+          </div>
         </div>
         <div class="sele-rows" @click="openFrame('service')">
           <span class="sele-label">服务类型</span>
@@ -64,8 +66,8 @@
       <button class="publish-btn btn " :disabled="ispublish" :class="{btnGray:ispublish}" @click="publish">确认发布</button>
     </div>
     <!-- <city-selector :column = 3  :show="isShow" idName="city-box" /> -->
-    <ServicePicker :show="seekService" @closeFrame="closeFrame('service')" :dataSource="serviceTypes" @chooseItem="chooseService"/>
-    <ServicePicker :show="seekServArea" @closeFrame="closeFrame('servArea')" :dataSource="servAreas" @chooseItem="chooseServArea"/>
+    <ServicePicker :show="seekService" @closeFrame="closeFrame('service')" :dataSource="serviceTypes" @chooseItem="chooseService" title="选择服务类型"/>
+    <ServicePicker :show="seekServArea" @closeFrame="closeFrame('servArea')" :dataSource="servAreas" @chooseItem="chooseServArea" title="选择服务地区"/>
     <DatePicker
         :visible="showDatePicker"
         :value="nowDate"
@@ -104,7 +106,8 @@ name:'publish',
       serviceTime:"",
       contacter:"",
       phone:"",
-      nowDate:""
+      nowDate:"",
+      maxLength:200
     };
   },
 
@@ -136,7 +139,7 @@ name:'publish',
       return name;
     }
   },
-
+ 
   mounted(){
     let time=Date.now();
     this.nowDate=moment(time).format('YYYY-MM-DD');
@@ -195,6 +198,10 @@ name:'publish',
       this.serviceTime=tranStamp(this.service_time);
       this.showDatePicker=false;
     },
+    maxChange(e){
+      let val=e.target.value;
+      if(val.length){}
+    },
     publish(){
       const { title,description,wishtype,areaid,address,serviceTime,contacter,phone } = this;
       
@@ -234,6 +241,7 @@ name:'publish',
             toggleModal('发布成功');
             setTimeout(()=>{
                this.ispublish=false;
+               this.$router.go(-1);
             },1000)
           }else{
             toggleModal(data.message)
@@ -259,9 +267,9 @@ name:'publish',
           padding: .5rem;
           box-sizing: border-box;
           .rows{
-            margin-bottom: .5rem;
+            margin-bottom: .8rem;
             .row-title{
-              margin-bottom: .3rem;
+              margin-bottom: .8rem;
               .flower{
                 color: #ff0000;
                 font-size: .8rem;
@@ -274,10 +282,11 @@ name:'publish',
                 resize: none;
                 border:1px solid #dbdbdb;
                 border-radius: 3px;
-                height: 5rem;
+                height: 8.7rem;
                 padding: .3rem;
                 box-sizing: border-box;
                 outline: none;
+                color: #666;
               }
               input{
                 border-bottom:1px solid #dbdbdb;
@@ -287,16 +296,36 @@ name:'publish',
                 box-sizing: border-box;
               }
             }
+            .desc-content{
+              position: relative;
+              .max-limit-block{
+                position: absolute;
+                bottom: .65rem;
+                right: .9rem;
+                color: #999;
+                font-size: 1rem;
+                span{
+                  font-size: .7rem;
+                }
+                strong{
+                  font-weight: normal;
+                  margin: 0 1px;
+                }
+              }
+            }
+          }
+          .warn{
+            color: #ff0000 !important;
           }
           .sele-rows{
             display: flex;
             height: 2.5rem;
-            margin-bottom: .5rem;
+            margin-bottom: .8rem;
             border-bottom:1px solid #dbdbdb;
             .sele-label{
               flex: 1;
               line-height: 2.5rem;
-              padding-left: .5rem;
+              padding-left: .6rem;
               box-sizing: border-box;
             }
             .sele-row-input{

@@ -29,19 +29,20 @@
                   <img :src="item.cover" alt="">
                 </div>
                 <div class="hunger-infos">
-                  <h2>{{item.activityname}}</h2>
+                  <h2>{{item.activityname | curtWords(9)}}</h2>
                   <div class="hunger-bottom">
                       <p>
-                        <span class="row-icon"><img src="../assets/images/time.png" alt=""></span>
-                        <span>{{item.activitystarttime}}</span>
+                        <span class="row-icon time-icon"><img src="../assets/images/time.png" alt=""></span>
+                        <span>{{item.subdate}}</span>
                       </p>
                       <p>
-                        <span class="row-icon"><img src="../assets/images/user.png" alt=""></span>
-                        <span>{{item.hascount}}/{{item.recruitcount}}</span>
+                        <span class="row-icon user-icon"><img src="../assets/images/user.png" alt=""></span>
+                        <span v-if="item.recruitcount==0">{{item.hascount}}/不限制</span>
+                        <span v-else>{{item.hascount}}/{{item.recruitcount}}</span>
                       </p>
                       <p>
-                        <span class="row-icon"><img src="../assets/images/address.png" alt=""></span>
-                        <span>{{item.address}}</span>
+                        <span class="row-icon addr-icon"><img src="../assets/images/address.png" alt=""></span>
+                        <span>{{item.address | curtWords(12)}}</span>
                       </p>
                   </div>
                 </div>
@@ -59,7 +60,7 @@
             </li>
           </ul>
         </Scroller>
-        <Loading v-show="isLoading"/>
+        <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
          <p class="none-data" v-if="!votList.length">暂无数据</p>
       </div>
     </div>
@@ -73,7 +74,7 @@ import HeadBar from '@/components/HeadBar'
 import ServicePicker from '@/components/ServicePicker'
 import Loading from '@/components/Loading'
 import {mapActions,mapState} from 'vuex'
-import { toggleModal,pageSize } from '../utils/tools'
+import { toggleModal,pageSize,loadMoreData,ReFreshDatas,fetchSyncDatas } from '../utils/tools'
 export default {
 name:'recruit',
   data () {
@@ -122,7 +123,9 @@ name:'recruit',
       if(pos.y>60){
           this.refreshData();
       }else if(pos.y<scroll.maxScrollY-30){
+        if(this.hasData){
           this.loadMore();
+        }
       }
     },
     scrolling(pos){
@@ -130,37 +133,26 @@ name:'recruit',
           this.isPullDownLoading=true;
       }
     },
-    refreshData(){
-      this.pageno=1;
-      this.req_Vots([{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize,state:this.state},true,data=>{
-        this.isFresh=true;
-        if(data.state===200 && data.data&&data.data.length){
-            this.pageno++;
-            this.$nextTick(()=>{
-                setTimeout(()=>{
-                    this.hasData=this.votList.length>=pageSize?true:false; 
-                    this.isFresh=false;
-                    this.isPullDownLoading=false;
-                },1500);
-            })
-            
+    calcList(data){
+        if(data.state===200){
+            this.hasData=this.votList.length>=pageSize?true:false; 
         }else{
-            toggleModal(data.message)
+            toggleModal(data.message);
         }
-      }])
+    },
+    refreshData(){
+      this.pageNo=1;
+      ReFreshDatas(this,this.req_Vots,{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize,state:this.state},data=>{
+        this.calcList(data);
+      })
     },
     loadMore(){
-      this.isPullUpLoading=true;
-      this.req_Vots([{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize,state:this.state},false,data=>{
-          if(data.state===200){
-              if(data.data.length){
-                  this.pageno++;
-              }
-            this.isPullUpLoading=false;
-          }else{
-                toggleModal(data.message)
-            }
-      }])
+      loadMoreData(this,this.req_Vots,{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize,state:this.state});
+    },
+    fetchData(){
+      fetchSyncDatas(this,this.req_Vots,{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize,state:this.state},data=>{
+        this.calcList(data);
+      })
     },
     showArea(){
       this.seekServArea=true;
@@ -191,25 +183,6 @@ name:'recruit',
       this.pageNo=1;
       this.isAll='N';
       this.fetchData();
-    },
-    fetchData(){
-      this.isLoading=true;
-      this.req_Vots([{isAll:this.isAll,areaId:this.areaId,sort:this.sort,pageNo:this.pageNo,pageSize,state:this.state},true,data=>{
-      if(data.state==200){
-          if(data.data&&data.data.length){
-            this.pageNo++;
-          }
-          this.$nextTick(()=>{
-            setTimeout(()=>{
-              this.hasData=this.votList.length>=pageSize?true:false;
-              this.isLoading=false; 
-            },1000);
-          })
-        }else{
-          toggleModal(data.message);
-          this.isLoading=false; 
-        }
-      }])
     }
   }
 }
@@ -237,7 +210,7 @@ name:'recruit',
       }
     }
     .recruit-contents{
-      height: calc(100% - 4.5rem);
+      height: calc(100% - 5rem);
       .recruit-wraper{
         height: 100%;
         position: relative;
@@ -287,27 +260,37 @@ name:'recruit',
                 height: 5rem;
                 position: relative;
                 h2{
-                  font-size: .75rem;
-                  color: #000;
+                  font-size: .85rem;
+                  font-weight: normal;
                 }
                 .hunger-bottom{
                   position: absolute;
                   width: 100%;
                   left: 0;
                   bottom: 0;
+                  color: rgb(128,128,128);
+                  font-size: .65rem;
                     p{
                       font-size: .6rem;
-                      margin-bottom: .1rem;
+                      margin-bottom: .2rem;
+                      color: rgb(127,127,127);
                       &:last-child{
                         margin: 0;
-                      }
-                      span{
-                        vertical-align: middle;
                       }
                       .row-icon{
                         display: inline-block;
                         width: .6rem;
                         margin-right: .3rem;
+                        vertical-align: middle;
+                      }
+                      .time-icon{
+                          width: .7rem;
+                      }
+                      .user-icon{
+                        width: .8rem;
+                      }
+                      .addr-icon{
+                        width: .6rem;
                       }
                     }
                   }

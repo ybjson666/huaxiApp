@@ -12,7 +12,7 @@
     props: {
       cityDatas: {
         type: Array,
-        default:[]
+        default:JSON.parse(localStorage.getItem('cityDatas'))||[]
       },
       column: {
         type: Number,
@@ -27,7 +27,13 @@
         default:""
       }
     },
-   
+    watch:{
+      cityDatas(val){
+        if(val){
+          this.render()
+        }
+      }
+    },
     mounted() {
       
       this.render()

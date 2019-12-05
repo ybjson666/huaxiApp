@@ -4,7 +4,13 @@
       <div class="apply-contents">
           <p class="actv-title-bar"><span class="rect"></span>活动名称</p>
           <p class="actv-title">{{actvName}}</p>
-          <textarea class="apply-desc" v-model="remark" placeholder="请在次输入报名申请描述"></textarea>
+          <div class="desc-block">
+              <textarea class="apply-desc" v-model="remark" placeholder="请在次输入报名申请描述" :maxlength="maxLength"></textarea>
+              <div class="max-limit-block" :class="{warn:remark.length>=maxLength}">
+                <span>{{remark.length}}</span><strong>/</strong><span>{{maxLength}}</span>
+              </div>
+          </div>
+          
           <button class="apply-btn btn" :disabled="isApply" @click="goApply" :class="{btnGray:isApply}">提交报名申请</button>
       </div>
   </div>
@@ -21,7 +27,8 @@ name:'apply',
         id:"",
         actvName:"",
         isApply:false,
-        remark:""
+        remark:"",
+        maxLength:200
     };
   },
 
@@ -50,6 +57,7 @@ name:'apply',
           apply({id,remark}).then(data=>{
               if(data.state==200){
                   toggleModal('报名成功');
+                  this.isApply=false;
                   this.remark="";
               }else{
                   toggleModal(data.message);
@@ -67,7 +75,7 @@ name:'apply',
     height: 100%;
     .apply-contents{
         height: calc(100% - 2rem);
-        background: #f0f0f0;
+        background: #f5f5f5;
         padding: .5rem;
         padding-top: 1rem;
         box-sizing: border-box;
@@ -91,6 +99,26 @@ name:'apply',
             padding-left: .5rem;
             box-sizing: border-box;
         }
+        .desc-block{
+            position: relative;
+            .max-limit-block{
+                position: absolute;
+                bottom: .65rem;
+                right: .9rem;
+                color: #999;
+                font-size: 1rem;
+                span{
+                  font-size: .7rem;
+                }
+                strong{
+                  font-weight: normal;
+                  margin: 0 1px;
+                }
+              }
+              .warn{
+                  color: #ff0000;
+              }
+        }
         .apply-desc{
             resize: none;
             height: 10rem;
@@ -101,6 +129,7 @@ name:'apply',
             box-sizing: border-box;
             border-radius: 3px;
             outline: none;
+            background: #fff;
         }
         .apply-btn{
             margin: 0 auto;

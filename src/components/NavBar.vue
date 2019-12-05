@@ -54,10 +54,11 @@ name:'navs',
 </script>
 <style lang='scss' scoped>
 .nav-container{
+   background:#fff;
   .nav-list{
     display: flex;
     height: 3rem;
-    padding-top: .4rem;
+    padding-top: .3rem;
     box-sizing: border-box;
     border-top:1px solid #f0f0f0;
     li{
@@ -72,7 +73,7 @@ name:'navs',
           width: 1rem;
           height: 1rem;
           margin: 0 auto;
-          margin-bottom: .2rem;
+          margin-bottom: .3rem;
         }
       }
       

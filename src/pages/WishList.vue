@@ -14,6 +14,7 @@
         </ul>
     </div>
     <div class="wishList-contents" ref="wrapers">
+        <div class="bar-tip"></div>
         <div class="wishList-wraper">
             <Scroller
                 @scrolling="scrolling" 
@@ -40,9 +41,9 @@
                     </li>
                 </ul>
             </Scroller>
-            <Loading v-show="isLoading"/>
             <p class="none-data" v-if="!wishList.length">暂无数据</p>
         </div>
+        <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
     </div>
   </div>
 </template>
@@ -50,7 +51,7 @@
 <script>
 import Scroller from '@/components/Scroller';
 import HeadBar from '@/components/HeadBar'
-import { toggleModal,pageSize } from '../utils/tools';
+import { toggleModal,pageSize,loadMoreData,ReFreshDatas,fetchSyncDatas } from '../utils/tools';
 import { mapState,mapActions } from 'vuex'
 import Loading from '@/components/Loading'
 export default {
@@ -91,39 +92,21 @@ name:'wishList',
     HeadBar,
     Loading
   },
-
   computed:{
-      ...mapState('wish',['wishList'])
+    ...mapState('wish',['wishList'])
   },
   created(){
-      this.fetchData();
+    this.fetchData();
   },
   methods: {
     ...mapActions('wish',['req_Wish']),
-    fetchData(){
-        this.isLoading=true;
-        this.req_Wish([{isMine:this.isMine,isHomePage:this.isHomePage,state:this.curType,pageSize,pageNo:this.pageNo},true,(data=>{
-            if(data.state===200){
-                if(data.data&&data.data.length){
-                    this.pageNo++;
-                }
-                this.$nextTick(()=>{
-                    setTimeout(()=>{
-                        this.hasData=this.wishList.length>pageSize?true:false;
-                        this.isLoading=false; 
-                    },500) 
-                })
-          }else{
-              toggleModal(data.message);
-              this.isLoading=false; 
-          }
-      })])
-    },
     touchEnded(pos,scroll){
       if(pos.y>60){
           this.refreshData();
       }else if(pos.y<scroll.maxScrollY-30){
+        if(this.hasData){
           this.loadMore();
+        }
       }
     },
     scrolling(pos){
@@ -131,37 +114,26 @@ name:'wishList',
           this.isPullDownLoading=true;
       }
     },
+    calcList(data){
+        if(data.state===200){
+            this.hasData=this.wishList.length>=pageSize?true:false; 
+        }else{
+            toggleModal(data.message);
+        }
+    },
     refreshData(){
         this.pageNo=1;
-        this.req_Wish([{isMine:this.isMine,isHomePage:this.isHomePage,state:this.curType,pageSize,pageNo:this.pageNo},true,(data=>{
-            this.isFresh=true;
-            if(data.state===200){
-                this.pageNo++;
-                this.$nextTick(()=>{
-                    setTimeout(()=>{
-                        this.hasData=this.wishList.length>pageSize?true:false;
-                        this.isFresh=false;
-                        this.isPullDownLoading=false;
-                    },1000);
-                })
-            }else{
-                toggleModal(data.message)
-            }
-        })])
+        ReFreshDatas(this,this.req_Wish,{isMine:this.isMine,isHomePage:this.isHomePage,state:this.curType,pageSize,pageNo:this.pageNo},data=>{
+            this.calcList(data);
+        })
     },
     loadMore(){
-      this.isPullUpLoading=true;
-       this.req_Wish([{isMine:this.isMine,isHomePage:this.isHomePage,state:this.curType,pageSize,pageNo:this.pageNo},false,(data=>{
-          if(data.state===200){
-              if(data.data.length){
-                  this.pageNo++;
-                  this.isPullUpLoading=false;
-              }
-             
-          }else{
-              toggleModal(data.message)
-          }
-      })])
+      loadMoreData(this,this.req_Wish,{isMine:this.isMine,isHomePage:this.isHomePage,state:this.curType,pageSize,pageNo:this.pageNo})
+    },
+    fetchData(){
+        fetchSyncDatas(this,this.req_Wish,{isMine:this.isMine,isHomePage:this.isHomePage,state:this.curType,pageSize,pageNo:this.pageNo},data=>{
+            this.calcList(data);
+        })
     },
     seleType(type){
         this.curType=type;
@@ -181,16 +153,16 @@ name:'wishList',
     background: #f0f0f0;
     .type-bar{
         height: 2rem;
-        margin-bottom: .8rem;
         .type-list{
             display: flex;
             li{
                 flex: 1;
                 text-align: center;
-                color: #000;
+                font-size: .85rem;
                 span{
                     display: inline-block;
-                    line-height: 1.9rem;
+                    line-height: 2.3rem;
+                    height: 1.9rem;
                 }
                 &.on{
                     color: #ff0000;
@@ -202,9 +174,10 @@ name:'wishList',
         }
     }
     .wishList-contents{
-        height: calc(100% - 4rem);
+        height: calc(100% - 4.5rem);
+        position: relative;
         .wishList-wraper{
-            height: 100%;
+            height: calc(100% - .85rem);
             position: relative;
             .wish-list{
                 li{
@@ -218,7 +191,7 @@ name:'wishList',
                         box-sizing: border-box;
                         border:1px solid #ccc;
                         border-radius: 3px;
-                        
+                        word-wrap:break-word;
                         p{
                             font-size: .8rem;
                             color: #000;

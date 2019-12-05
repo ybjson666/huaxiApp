@@ -1,18 +1,18 @@
 <template>
   <div class='regist-container'>
-     <head-bar title="注册"></head-bar>
+     <head-bar title="注册" :showBack="showBack"></head-bar>
       <div class="regist-contents">
           <div class="user-pic">
               <img src="../assets/images/head2.png" alt="">
           </div>
           <div class="login-block">
             <div class="row">
-                <p>账号名</p>
+                <span class="label">账号名</span>
                 <input type="text" class="row-input" placeholder="请在此输入账号名" v-model="nickName">
             </div>
             <div class="row">
-                <p>密码</p>
-                <input type="password" class="row-input" placeholder="请在此输入密码 (6-20位)" v-model="password">
+                <span class="label">密码</span>
+                <input type="password" class="row-input" placeholder="请输入密码(6-20位数字加字母)" v-model="password">
             </div>
             <!-- <div class="row">
                 <div class="row-bar">
@@ -28,18 +28,16 @@
                 </div>
             </div> -->
             <div class="row">
-                <p>手机号</p>
+                <span class="label">手机号</span>
                 <input type="text" class="row-input" placeholder="请在此输入手机号" v-model="phone" oninput = "value=value.replace(/[^\d]/g,'')">
             </div>
             <div class="row very-row">
-                <p>验证码</p>
+                <span class="label">验证码</span>
                 <input type="text" class="row-input" placeholder="请在此输入验证码" v-model="verify" oninput = "value=value.replace(/[^\d]/g,'')">
                 <button class="very-code" @click="getCode" :disabled="isuse">{{codeTxt}}</button>
             </div>
-            <div class="row">
-                <p class="info"><span @click="goLogin">已有账号？</span></p>
-            </div>
-            <button class="regist-btn btn" @click="registing">注册</button>
+            <p class="info"><span @click="goLogin">已有账号？</span></p>
+            <button class="regist-btn btn" @click="registing" :disabled="isRegist" :class="{btnGray:isRegist}">注册</button>
           </div>
       </div>
   </div>
@@ -62,7 +60,9 @@ name:'regist',
         phone:"",
         verify:"",
         codeTxt:"获取验证码",
-        isuse:false
+        isuse:false,
+        showBack:false,
+        isRegist:false
     };
   },
   mounted(){},
@@ -79,8 +79,8 @@ name:'regist',
           }if(!password){
               toggleModal("请输入密码");
               return;
-          }if(!reg_pwd.test(password)){
-              toggleModal("密码格式错误");
+          }if(password.trim().length<6){
+              toggleModal("密码长度不能小于6位");
               return;
           }else if(!phone){
               toggleModal("请输入电话号码");
@@ -93,16 +93,19 @@ name:'regist',
               toggleModal("请输入验证码");
               return;
           }
+          this.isRegist=true;
         regist({nickName,phone,password,verify}).then((data)=>{
             if(data.state==200){
                 let uid=data.data.id;
                 localStorage.setItem('uid',uid);
                 toggleModal('注册成功');
+                this.isRegist=false;
                 setTimeout(()=>{
                     this.$router.push('/login')
                 },1000);
             }else{
                 toggleModal(data.message);
+                this.isRegist=false;
             }
         })
         
@@ -145,9 +148,13 @@ name:'regist',
 </script>
 <style lang='scss' scoped>
 .regist-container{
+    height: 100%;
     .regist-contents{
         padding: 1rem 1.8rem;
         box-sizing: border-box;
+        height:calc(100% - 2.5rem);
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
         .user-pic{
             width: 5.5rem;
             height: 5.5rem;
@@ -156,25 +163,19 @@ name:'regist',
             overflow: hidden;
         }
         .login-block{
-            margin-top: 1.5rem;
+            margin-top: 1.4rem;
             .row{
-                margin-bottom: 1rem;
-                p{
-                    color: #333;
-                    font-size: .8rem;
-                    margin-bottom: .8rem;
-                }
-                .info{
-                    text-align: right;
-                    color: #ff0000;
-                    span{
-                        text-decoration: underline;
-                    }
+                display: flex;
+                border-bottom: 1px solid rgb(204,204,204);
+                box-sizing: border-box;
+                padding-bottom: .6rem;
+                padding-top: 2rem;
+                .label{
+                    font-size: .85rem;
+                    width: 3.5rem;
                 }
                 .row-input{
-                    line-height: 1.25rem;
-                    border-bottom: 1px solid #ccc;
-                    width: 100%;
+                    flex: 1;
                 }
                 .row-bar{
                     display: flex;
@@ -187,6 +188,15 @@ name:'regist',
                     }
                 }
             }
+            .info{
+                text-align: right;
+                color: #ff0000;
+                width: 100%;
+                margin-top: .8rem;
+                span{
+                    text-decoration: underline;
+                }
+            }
             .very-row{
                 position: relative;
                 .very-code{
@@ -194,10 +204,11 @@ name:'regist',
                     right: 0;
                     z-index: 5;
                     color: #ff0000;
-                    bottom: .2rem;
+                    bottom: .7rem;
                     background: transparent;
                     outline: none;
                     border: none;
+                    font-size: .75rem;
                 }
             }
             .regist-btn{

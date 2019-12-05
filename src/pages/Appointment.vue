@@ -12,6 +12,7 @@
           </ul>
       </div>
       <div class="appoint-contents">
+          <div class="bar-tip"></div>
           <div class="appoint-wraper">
               <Scroller
                     @scrolling="scrolling" 
@@ -27,16 +28,11 @@
                     <li v-for="(item,index) in appointList" :key="index">
                       <div class="actv-pic">
                             <img :src="item.pic" alt="">
-                            <div class="actv-tags" v-if="item.type!=='3'">
-                                <span class="tags-text" v-if="item.type=='1'">待审核</span>
-                                <span class="tags-text" v-else-if="item.type=='2'">已通过</span>
-                            </div>
                         </div>
                         <div class="actv-infos">
                             <div class="actv-title-wraps">
                                 <span class="actv-title fl">{{item.appoint_name}}</span>
                                 <span class="cancel unCancel fr" v-if="item.type==='1'" @click="canceAply">取消预约</span>
-                                <span class="cancel canceled fr" v-if="item.type==='2'">取消预约</span>
                                 <div class="cl"></div>
                             </div>
                             <div class="actv-bottom">
@@ -50,7 +46,9 @@
                                 </p>
                             </div>
                             <div class="actv-mark" v-if="item.type==='3'"><img src="../assets/images/failure.png" alt=""></div>
+                            <div class="actv-mark" v-else-if="item.type==='2'"><img src="../assets/images/chech_success.png" alt=""></div>
                         </div>
+                        <span class="state-tags" v-if="item.type=='1'">待审核</span>
                     </li>
                 </ul>
               </Scroller>
@@ -186,18 +184,19 @@ name:'appoint',
 <style lang='scss' scoped>
 .appoint-container{
     height: 100%;
+    background: #f5f5f5;
      .type-bar{
         height: 2rem;
-        margin-bottom: .8rem;
         .type-list{
             display: flex;
             li{
                 flex: 1;
                 text-align: center;
-                color: #000;
+                font-size: .85rem;
                 span{
                     display: inline-block;
-                    line-height: 1.9rem;
+                    line-height: 2.1rem;
+                    height: 1.9rem;
                 }
                 &.on{
                     color: #ff0000;
@@ -209,18 +208,24 @@ name:'appoint',
         }
     }
     .appoint-contents{
-        height: calc(100% - 4.8rem);
+        height: calc(100% - 4.5rem);
         background: #f0f0f0;
+        position: relative;
+        .bar-tip{
+            background: #f5f5f5;
+            height: .75rem;
+        }
         .appoint-wraper{
-            height: 100%;
+            height: calc(100% - .75rem);
             position: relative;
             .appoint-list{
               li{
-              display: flex;
+                    display: flex;
                     background: #fff;
-                    padding: .5rem;
+                    padding: .7rem .75rem;
                     box-sizing: border-box;
-                    margin-bottom: .5rem;
+                    margin-bottom: .75rem;
+                    position: relative;
                     .actv-pic{
                         width: 6.25rem;
                         height: 5rem;
@@ -252,17 +257,20 @@ name:'appoint',
                             width: 100%;
                             bottom: 0;
                             left: 0;
+                            color: rgb(128,128,128);
                             .actv-time-wraps{
+                                margin-bottom:.4rem; 
                                 .time-icon{
                                     display: inline-block;
-                                    width: .5rem;
+                                    width: .6rem;
                                     vertical-align: middle;
                                 }
                             }
                             .actv-addr-wraps{
+                                margin-bottom: .4rem;
                                 .addr-icon{
                                     display: inline-block;
-                                    width: .5rem;
+                                    width: .6rem;
                                     vertical-align: middle;
                                 }
                             }
@@ -271,15 +279,14 @@ name:'appoint',
                         .actv-title-wraps{
                             .actv-title{
                                 display: block;
-                                color: #000;
-                                font-size: .75rem;
-                                width: 8rem;
-                                line-height: 1rem;
+                                font-size: .85rem;
+                                width: 7rem;
                             }
                             .cancel{
                                 text-decoration: underline;
                                 display: inline-block;
                                 line-height: 1.25rem;
+                                font-size: .85rem;
                             }
                             .unCancel{
                                 color: #ff0000;
@@ -291,9 +298,23 @@ name:'appoint',
                         .actv-mark{
                             position: absolute;
                             width: 3rem;
-                            right:-.5rem;
-                            top:-.5rem;
+                            right:-.75rem;
+                            top:-.7rem;
                         }
+                    }
+                    .state-tags{
+                        display: block;
+                        position: absolute;
+                        left: 0.35rem;
+                        top:.7rem;
+                        width: 3.2rem;
+                        height: 1.8rem;
+                        text-align: center;
+                        line-height: 1.5rem;
+                        color: #fff;
+                        font-size: .6rem;
+                        background: url('../assets/images/bg4.png') no-repeat;
+                        background-size:105% 100%;
                     }
                 }
             }

@@ -1,10 +1,11 @@
 <template>
   <div class='main-container'>
-    <transition name="fade" mote="out-in">
+    <transition>
       <keep-alive>
-        <router-view/>
+          <router-view v-if="this.$route.meta.keepAlive"/>
       </keep-alive>
     </transition>
+    <router-view v-if="!this.$route.meta.keepAlive"></router-view>
       <div class="nav-bars">
         <Nav-bar></Nav-bar>
       </div>

@@ -64,7 +64,7 @@
 <script>
 import Scroller from '@/components/Scroller';
 import HeadBar from '@/components/HeadBar'
-import { toggleModal,pageSize,loadMoreData,fetchSyncDatas,ReFreshDatas } from '../utils/tools';
+import { toggleModal,pageSize,loadMoreData,fetchSyncDatas,refreshData } from '../utils/tools';
 import { mapState,mapActions,mapMutations } from 'vuex';
 import { cancelWish } from '../utils/api'
 import Loading from '@/components/Loading'
@@ -119,6 +119,7 @@ name:'wish',
   },
 
   created(){
+    this.isLoading=true;
     this.fetchData();
   },
 
@@ -128,6 +129,7 @@ name:'wish',
     seleType(type){
           this.state=type;
           this.pageNo=1;
+          this.isLoading=true;
           this.fetchData();
       },
       touchEnded(pos,scroll){
@@ -144,26 +146,96 @@ name:'wish',
           this.isPullDownLoading=true;
       }
     },
-    calcList(data){
-        if(data.state===200){
-            this.hasData=this.wishList.length>=pageSize?true:false; 
-        }else{
-            toggleModal(data.message);
-        }
-    },
     refreshData(){
         this.pageNo=1;
-        ReFreshDatas(this,this.req_Wish,{isMine:this.isMine,state:this.state,pageNo:this.pageNo,pageSize},data=>{
-            this.calcList(data);
-        })
+        this.pullUpMsg="上拉加载更多数据";
+        this.isLoading=true;
+        this.req_Wish([{isMine:this.isMine,state:this.state,pageNo:this.pageNo,pageSize},true,data=>{
+            if(data.state===200){
+                if(data.data&&data.data.length){
+                    this.pageNo++;
+                }
+                this.isLoading=false;
+                setTimeout(()=>{
+                    this.isFresh=true;
+                    this.$nextTick(()=>{
+                        setTimeout(()=>{
+                            this.hasData=this.wishList.length>=pageSize?true:false; 
+                            this.isFresh=false;
+                            this.isPullDownLoading=false;
+                        },1000);
+                    })
+                },500)
+            }else if(data.state===700004){
+                    toggleModal(data.message);
+                    this.isLoading=false;
+                    setTimeout(()=>{
+                        this.$router.push('/login');
+                    },1000);
+            }else{
+                toggleModal(data.message);
+                setTimeout(()=>{
+                this.isFresh=true;
+                    setTimeout(()=>{
+                    this.isFresh=false;
+                    },1000)
+                },500);
+            }
+        }])
     },
     loadMore(){
-        loadMoreData(this,this.req_Wish,{isMine:this.isMine,state:this.state,pageNo:this.pageNo,pageSize});
+      this.isPullUpLoading=true;
+      this.req_Wish([{isMine:this.isMine,state:this.state,pageNo:this.pageNo,pageSize},false,data=>{
+          if(data.state===200){
+              if(data.data.length){
+                  this.pageNo++;
+              }else{
+                  this.pullUpMsg="没有更多数据了~";
+              }
+              setTimeout(()=>{
+                  this.isPullUpLoading=false;
+              },600);
+                
+          }else if(data.state===700004){
+                    toggleModal(data.message);
+                    setTimeout(()=>{
+                        this.$router.push('/login');
+                    },1000);
+            }else{
+                toggleModal(data.message);
+                setTimeout(()=>{
+                    this.isPullUpLoading=false;
+                },600);
+            }
+      }])
     },
     fetchData(){
-        fetchSyncDatas(this,this.req_Wish,{isMine:this.isMine,state:this.state,pageNo:this.pageNo,pageSize},data=>{
-           this.calcList(data);
-        });
+    //     this.pullUpMsg="上拉加载更多数据";
+    //     this.req_Wish([{isMine:this.isMine,state:this.state,pageNo:this.pageNo,pageSize},true,data=>{
+    //     if(data.state===200){
+    //         if(data.data &&data.data.length){
+    //             this.pageNo++;
+    //         }
+    //         this.$nextTick(()=>{
+    //             setTimeout(()=>{
+    //                 this.hasData=this.wishList.length>=pageSize?true:false; 
+    //                 this.isLoading=false;
+    //             },500);
+    //         })
+    //     }else if(data.state===700004){
+    //             toggleModal(data.message);
+    //             this.isLoading=false;
+    //             setTimeout(()=>{
+    //                 this.$router.push('/login');
+    //             },1000);
+                
+    //         }else{
+    //         this.isLoading=false;
+    //         toggleModal(data.message)
+    //     }
+    //   }])
+
+      fetchSyncDatas(this,this.req_Wish,{isMine:this.isMine,state:this.state,pageNo:this.pageNo,pageSize},this.wishList);
     },
     cancel(wishId){
         cancelWish({wishId}).then(data=>{

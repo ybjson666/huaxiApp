@@ -3,14 +3,15 @@
       <div class="picker-wraps slideInUp">
           <div class="picker-bar">
               <span class="cancel-btn fl" @click="closeFrame">取消</span>
+              <h2 class="picker-title">{{title}}</h2>
               <span class="sure-btn fr" @click="sureSele">确定</span>
               <div class="cl"></div>
           </div>
           <div class="picker-content">
               <div class="picker-wraper" ref="picker">
                   <ul class="data-list" ref="list">
-                      <li v-for="(item,index) in dataSource" :key="index" :class="{choose:curIndex===index}">
-                          <span @click="seleItem(item,index)">{{item.DictName}}</span>
+                      <li v-for="(item,index) in dataSource" :key="index" :class="{choose:curIndex===index}" @click="seleItem(item,index)">
+                          <span>{{item.DictName}}</span>
                       </li>
                   </ul>
               </div>
@@ -32,6 +33,7 @@ export default {
     props:{
         show:Boolean,
         dataSource:Array,
+        title:String
     },
     watch:{
         show(){
@@ -107,20 +109,35 @@ export default {
         left: 0;
         bottom: 0;
         .picker-bar{
-            height: 2rem;
-            background: #f5f5f5;
-            border-bottom:1px solid #ccc;
+            height: 3rem;
             box-sizing: border-box;
             padding: 0 .5rem;
             font-size: .75rem;
-            line-height: 2rem;
+            line-height: 3rem;
+            position: relative;
+            span{
+                display: block;
+                line-height: 3rem;
+                position: absolute;
+                top:0;
+                height: 3rem;
+            }
+            h2{
+                text-align: center;
+                line-height: 3rem;
+                font-size: .8rem;
+                color: #000;
+            }
             .cancel-btn{
-                color: #f39c1c;
+                color: #666;
+                left: .5rem;
             }
             .sure-btn{
-                color: #26a2ff; 
+                color: #f39c1c;
+                right: .5rem;
             }
         }
+        
     }
     .picker-content{
         position: relative;
@@ -133,7 +150,8 @@ export default {
             top: 0;
             overflow: hidden;
             .data-list{
-                padding: .5rem 0;
+                padding: .5rem;
+                box-sizing: border-box;
                 li{
                     line-height: 1.8rem;
                     text-align: center;

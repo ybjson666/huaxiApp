@@ -26,12 +26,13 @@ export default {
 </script>
 <style lang='scss' scoped>
 .head-bar-container{
-    height: 2rem;
+    height: 2.5rem;
     position: relative;
     background: #ff0000;
     width: 100%;
+    z-index: 50;
     h2{
-        line-height: 2rem;
+        line-height: 2.5rem;
         text-align: center;
         color: #fff;
         font-size: .9rem;
@@ -41,7 +42,7 @@ export default {
         position: absolute;
         width: .5rem;
         left: .5rem;
-        top:.5rem;
+        top:.75rem;
     }
 }
 </style>

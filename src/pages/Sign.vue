@@ -23,7 +23,8 @@
                                 <div class="sing-info-bottom">
                                     <p class="sign-num-wraps">
                                         <span class="num-icon"><img src="../assets/images/user.png" alt=""></span>
-                                        <span class="sign-num">{{item.ActivityRecruit.hascount}}/{{item.ActivityRecruit.recruitcount}}</span>
+                                        <span class="sign-num" v-if="item.ActivityRecruit.recruitcount==0">{{item.ActivityRecruit.hascount}} / 不限制</span>
+                                        <span class="sign-num" v-else>{{item.ActivityRecruit.hascount}}/{{item.ActivityRecruit.recruitcount}}</span>
                                     </p>
                                     <p class="sign-addr-wraps">
                                         <span class="addr-icon"><img src="../assets/images/address.png" alt=""></span>
@@ -68,7 +69,7 @@
                     </li>
                 </ul>
               </Scroller>
-                <Loading v-show="isLoading"/>
+                <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
                 <Loading v-show="isLocation">
                     <p class="locations" slot="contents">正在定位中....</p>
                 </Loading>
@@ -86,7 +87,7 @@ import HeadBar from '@/components/HeadBar'
 import Loading from '@/components/Loading'
 import { mapState,mapActions,mapMutations } from 'vuex';
 import { sign,signOut } from '../utils/api';
-import { toggleModal,pageSize,mapKey} from '../utils/tools'
+import { toggleModal,pageSize,mapKey,loadMoreData,ReFreshDatas,fetchSyncDatas} from '../utils/tools'
 import MapLoader from '../utils/aMap'
 import aMap from '../utils/aMap';
 export default {
@@ -139,19 +140,27 @@ name:'sign',
         ...mapActions('volunteer',['req_signs']),
         ...mapMutations('volunteer',['set_signin_list','set_signout_list']),
         signs(id,lat,lon,radius,type){
+             const { isvolunteer } =this.userInfo;
             this.activityRecruitId=id;
             this.curActLat=parseFloat(lat);
             this.curActLon=parseFloat(lon);
             this.curRadius=parseInt(radius);
             this.signType=type;
-            this.isLocation=true;
-            this.initMap()
+            if(isvolunteer==1){
+                this.isLocation=true;
+                this.initMap();
+            }else{
+                toggleModal("您不是志愿者，请先成为志愿者吧~");
+            }
+            
         },
         touchEnded(pos,scroll){
             if(pos.y>60){
                 this.refreshData();
             }else if(pos.y<scroll.maxScrollY-30){
-                this.loadMore();
+                if(this.hasData){
+                    this.loadMore();
+                }
             }
         },
         scrolling(pos){
@@ -159,42 +168,29 @@ name:'sign',
                 this.isPullDownLoading=true;
             }
         },
+        calcList(data){
+            if(data.state===200){
+                this.hasData=this.signList.length>=pageSize?true:false; 
+            }else{
+                toggleModal(data.message);
+            }
+        },
         refreshData(){
-            setTimeout(()=>{
-                this.isPullDownLoading=false;
-                this.isFresh=true;
-                setTimeout(()=>{
-                    this.isFresh=false;
-                },1000)     
-            },1000)
+            this.pageNo=1;
+            ReFreshDatas(this,this.req_signs,{pageSize,pageNo:this.pageNo,state:this.state,id:this.customerid},data=>{
+                this.calcList(data);
+            })
         },
         loadMore(){
-            this.isPullUpLoading=true;
-            setTimeout(()=>{
-                this.isPullUpLoading=false;
-            },1000)
+            loadMoreData(this,this.req_signs,{pageSize,pageNo:this.pageNo,state:this.state,id:this.customerid});
         },
         fetchData(){
-            this.isLoading=true;
-            this.req_signs([{pageSize,pageNo:this.pageNo,state:this.state,id:this.customerid},true,(data=>{
-                if(data.state===200){
-                    if(data.data&&data.data.length){
-                        this.pageNo++;
-                    }
-                    this.$nextTick(()=>{
-                        setTimeout(()=>{
-                            this.hasData=this.signList.length>pageSize?true:false;
-                            this.isLoading=false; 
-                        },500) 
-                    })
-                }else{
-                    toggleModal(data.message)
-                }
-            })])
+            fetchSyncDatas(this,this.req_signs,{pageSize,pageNo:this.pageNo,state:this.state,id:this.customerid},data=>{
+                this.calcList(data);
+            })
         },
         onError(obj) {
-            alert(obj.info + '--' + obj.message);
-            console.log(obj);
+            toggleModal(obj.message)
         },
         initMap(callBack){
             let that=this;
@@ -229,29 +225,24 @@ name:'sign',
                                 let p2=[that.curActLon,that.curActLat];
                                 let r=parseInt((AMap.GeometryUtil.distance(p1, p2)));
                                 if(that.curRadius-r>=0){
-                                    const { isvolunteer } =that.userInfo;
-                                    if(isvolunteer==1){
-                                        if(that.signType==='sign'){
-                                            sign({activityRecruitId:that.activityRecruitId,customerId:that.customerid}).then(data=>{
-                                                if(data.state===200){
-                                                    that.set_signin_list(that.activityRecruitId);
-                                                    toggleModal('签到成功');
-                                                }else{
-                                                    toggleModal(data.message);
-                                                }
-                                            })
-                                        }else{
-                                            signOut({activityRecruitId:that.activityRecruitId,customerId:that.customerid}).then(data=>{
-                                                if(data.state===200){
-                                                    that.set_signout_list(that.activityRecruitId);
-                                                    toggleModal('签退成功');
-                                                }else{
-                                                    toggleModal(data.message);
-                                                }
-                                            })
-                                        }
+                                    if(that.signType==='sign'){
+                                        sign({activityRecruitId:that.activityRecruitId,customerId:that.customerid}).then(data=>{
+                                            if(data.state===200){
+                                                that.set_signin_list(that.activityRecruitId);
+                                                toggleModal('签到成功');
+                                            }else{
+                                                toggleModal(data.message);
+                                            }
+                                        })
                                     }else{
-                                        toggleModal("你不是志愿者，请成为志愿者吧！")
+                                        signOut({activityRecruitId:that.activityRecruitId,customerId:that.customerid}).then(data=>{
+                                            if(data.state===200){
+                                                that.set_signout_list(that.activityRecruitId);
+                                                toggleModal('签退成功');
+                                            }else{
+                                                toggleModal(data.message);
+                                            }
+                                        })
                                     }
                                     
                                 }else{
@@ -273,20 +264,21 @@ name:'sign',
 .sign-container{
     height: 100%;
     .sign-contents{
-        height: calc(100% - 2rem);
+        height: calc(100% - 2.5rem);
         background: #f0f0f0;
         .sign-wraper{
             position: relative;
             height: 100%;
             .sign-list{
-                padding: .5rem;
-                padding-top: .8rem;
+                padding:0 .75rem;
+                padding-top: 1rem;
                 box-sizing: border-box;
                 li{
                     background: #fff;
                     border-radius: 3px;
                     margin-bottom: .5rem;
-                    padding: .5rem;
+                    padding: .65rem .5rem;
+                    padding-bottom: 1rem;
                     box-sizing: border-box;
                     .sign-top{
                         display: flex;
@@ -303,8 +295,7 @@ name:'sign',
                             position: relative;
                             height: 5rem;
                             .sign-name{
-                                font-size: .75rem;
-                                color: #000;
+                                font-size: .85rem;
                                 font-weight: normal;
                             }
                             .sing-info-bottom{
@@ -312,22 +303,21 @@ name:'sign',
                                 position: absolute;
                                 left: 0;
                                 bottom: 0;
+                                color: rgb(128,128,128);
                                 .sign-num-wraps{
-                                    margin-bottom: .2rem;
+                                    margin-bottom: .5rem;
                                     .num-icon{
                                         display: inline-block;
-                                        width: .65rem;
-                                        vertical-align: middle;
+                                        width: .75rem;
                                         margin-right: .1rem;
+                                
                                     }
                                 }
                                 .sign-addr-wraps{
                                     .addr-icon{
                                         display: inline-block;
-                                        width: .5rem;
+                                        width: .55rem;
                                         margin-right: .1rem;
-                                    }
-                                    span{
                                         vertical-align: middle;
                                     }
                                 }
@@ -335,7 +325,7 @@ name:'sign',
                         }
                     }
                     .sign-bottom{
-                        padding-top: .8rem;
+                        padding-top: 1rem;
                         .sign-time-wrapper{
                             display: flex;
                             justify-content: center;
@@ -349,11 +339,16 @@ name:'sign',
                                     line-height: 1rem;
                                 }
                                 .sign-hour{
-                                    font-size: .8rem;
+                                    font-size: 1rem;
+                                    margin-bottom: .5rem;
                                 }
                                 .sign-date{
-                                    color: #666;
+                                    color: rgb(128,128,128);
+                                    font-size: .65rem;
                                 }
+                            }
+                            .sign-time-middle{
+                                flex: .8;
                             }
                         }
                         .sign-btn-groups{
@@ -361,17 +356,17 @@ name:'sign',
                             display: flex;
                             justify-content: flex-end;
                             span{
-                                height: 2rem;
+                                height: 1.5rem;
                                 text-align: center;
                                 color: #ff0000;
                                 border:1px solid #ff0000;
                                 border-radius: 1rem;
-                                line-height: 2rem;
+                                line-height: 1.5rem;
                                 box-sizing: border-box;
                             }
                             .start-btn{
-                                width: 7.5rem;
-                                margin-right: 1rem;
+                                width: 5rem;
+                                margin-right: .65rem;
                             }
                             .exit-btn{
                                 width: 3.5rem;

@@ -30,6 +30,7 @@ MobileArea.prototype = {
         // _self.gearArea.className = 'gearArea'
       _self.gearArea.innerHTML = '<div class="areaCtrl slideInUp">' +
         '<div class="areaBtnBox">' +
+        '<h2 class="areaTitle">选择地区</h2>' +
         '<div class="areaBtn lareaCancel">取消</div>' +
         '<div class="areaBtn lareaFinish">确定</div>' +
         '</div>' +
@@ -259,7 +260,7 @@ MobileArea.prototype = {
       var childData
       switch (_self.type) {
         case 1:
-          // childData = item[gearVal].child
+          // childData = item[gearVal].child  (cityData中的child)
           childData = item[gearVal].childAreaDtos
           break
         case 2:
@@ -344,6 +345,7 @@ MobileArea.prototype = {
     _self.trigger.dispatchEvent(evt)
   },
   close: function(e) {
+   
     e.preventDefault()
     var _self = this
     // var evt = new CustomEvent('input')
@@ -390,26 +392,26 @@ MobileArea.prototype = {
       throw new Error('传入的column值与设定的默认地址格式不匹配')
     }
     const provArr = this.data.filter((one) => {
-      return one.id === arr[0]
+      return one.id == arr[0]
     })
     const provInd = this.data.indexOf(provArr[0])
     if (this.column === 1) {
       this.setPos(provInd, 0, 0)
     } else if (this.column === 2) {
-      const cityArr = provArr[0].child.filter((one) => {
-        return one.id === arr[1]
+      const cityArr = provArr[0].childAreaDtos.filter((one) => {  //cityData中对应为provArr[0].child
+        return one.id == arr[1]
       })
-      const cityInd = provArr[0].child.indexOf(cityArr[0])
+      const cityInd = provArr[0].childAreaDtos.indexOf(cityArr[0])
       this.setPos(provInd, cityInd, 0)
     } else {
-      const cityArr = provArr[0].child.filter((one) => {
-        return one.id === arr[1]
+      const cityArr = provArr[0].childAreaDtos.filter((one) => {
+        return one.id == arr[1]
       })
-      const cityInd = provArr[0].child.indexOf(cityArr[0])
-      const townArr = cityArr[0].child.filter((one) => {
-        return one.id === arr[2]
+      const cityInd = provArr[0].childAreaDtos.indexOf(cityArr[0])
+      const townArr = cityArr[0].childAreaDtos.filter((one) => {
+        return one.id == arr[2]
       })
-      const townInd = cityArr[0].child.indexOf(townArr[0])
+      const townInd = cityArr[0].childAreaDtos.indexOf(townArr[0])
       this.setPos(provInd, cityInd, townInd)
     }
     // 重新设置位置

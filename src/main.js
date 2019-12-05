@@ -7,14 +7,27 @@ import 'mint-ui/lib/style.css'
 import store from './store'
 import rem from './utils/rem';
 import moment from 'moment'//导入文件 
-import lodash from 'lodash'
-import {toggleModal } from './utils/tools'
-
+// import lodash from 'lodash'
+import {toggleModal,isEn } from './utils/tools'
+// import animate from 'animate.css'
 Vue.prototype.moment = moment;//赋值使用
 
 Vue.use(Mint);
 Vue.config.productionTip = false;
+// Vue.use(animate);//路由动画
 
+/**全局文字长度过滤 */
+Vue.filter('curtWords',(val,num)=> {
+  if(!isEn.test(val)){
+    if(val.length>num){
+      return val.slice(0,num)+'...';
+    }else{
+      return val;
+    }
+  }else{
+    return val;
+  }
+})
 
 
 /**
@@ -23,22 +36,21 @@ Vue.config.productionTip = false;
 rem(document,window);
 
 //获取用户信息
-let token=localStorage.getItem('appToken');
-
-if(token){
-  store.dispatch('user/req_getUser',(data)=>{
-      if(data.state===700004){
-        toggleModal(data.message);
-      }
-  })
-}
+// let token=localStorage.getItem('appToken');
+// let path=location.href.split('/')[location.href.split('/').length-1];
+// if(token&&path!='login'){
+//   store.dispatch('user/req_getUser',(data)=>{
+//       if(data&&data.state!==200){
+//         toggleModal(data.message);
+//       }
+//   })
+// }
 
 
 /*
   登录拦截
 */
 router.beforeEach((from, to, next) => {
-
    if (from.meta.requireAuth) { // 判断跳转的路由是否需要登录
         // console.log(store._modules.root.state)
        if (store._modules.root.state.user.token) { // vuex.state判断token是否存在

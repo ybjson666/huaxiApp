@@ -38,7 +38,6 @@ name:'navgatior',
         li{
             flex: 1;
             text-align: center;
-            height: 5rem;
             box-sizing: border-box;
             .nav-icons{
                 display: block;

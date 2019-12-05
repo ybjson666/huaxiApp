@@ -2,8 +2,12 @@ import {$post,$get} from './request';
 
 
 
-/*获取验证码*/
+/*获取验证码，注册*/
 export const getVerifyCode=(phone)=>{
+    return $get(`/customer/api/registersms?phone=${phone}&tenantid=default&stag=A`)
+}
+/*获取验证码,找回密码*/
+export const getVerifyCode2=(phone)=>{
     return $get(`/customer/api/passbacksms?phone=${phone}&tenantid=default&stag=A`)
 }
 /*注册*/
@@ -114,4 +118,8 @@ export const getCitys=async ()=>{
 /*找回密码*/
 export const findPwds=async (data)=>{
     return $post(`/customer/api/rpass`,data)
+}
+/*获取积分商城地址*/
+export const getShops=async ()=>{
+  return $get(`/sysconfig/api/all`)
 }

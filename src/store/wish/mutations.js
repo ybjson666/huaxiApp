@@ -8,7 +8,7 @@ export default{
         state.wishList=list
     },
     [SET_WISH](state,wish){
-        state.wish=wish
+        state.wishInfo=wish
     },
     [CANCEL_WISH](state,id){
         state.wishList=state.wishList.map(item=>{

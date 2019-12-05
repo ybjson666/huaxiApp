@@ -4,7 +4,7 @@
     <div class="contents">
         <div class="login-type-bar">
             <ul class="type-list">
-                <li v-for="(item,index) in typeList" :key="index" 
+                <li v-for="(item,index) in typeList" :key="index"
                 :class="{on:userType===item.type}"
                 @click="seleType(item.type)"
                 >
@@ -12,29 +12,29 @@
                 </li>
             </ul>
         </div>
-        <form action="" class="login-form">
+        <div class="login-form">
             <div class="row">
-                <span class="label"><img src="../assets/images/account.png" alt="" oninput = "value=value.replace(/[^\d]/g,'')"></span>
-                <input type="text" placeholder="请输入手机号" class="row-input" v-model="phone">
+                <span class="label"><img src="../assets/images/account.png" alt=""></span>
+                <input type="text" placeholder="请输入手机号" class="row-input" v-model="phone" oninput = "value=value.replace(/[^\d]/g,'')">
             </div>
             <div class="row last">
                 <span class="label"><img src="../assets/images/password.png" alt=""></span>
                 <input type="password" placeholder="请输入密码" class="row-input" v-model="password">
             </div>
             <p class="forget-pwd-bar">
-                <span @click="forgetPwd">忘记密码</span>
+                <span @click.stop="forgetPwds">忘记密码</span>
             </p>
             <div class="btn-block">
-                <div class="login-btn" @click="login">登录</div>
+                <button class="login-btn" @click="login" :disbaled="isLogin" :class="{btnGray:isLogin}">登录</button>
                 <div class="regist-btn" @click="goRegist">注册</div>
             </div>
-        </form>
+        </div>
     </div>
   </div>
 </template>
 
 <script>
-import { toggleModal,reg_phone } from '../utils/tools'
+import { toggleModal,reg_phone,reg_pwd } from '../utils/tools'
 import { mapActions } from 'vuex'
 export default {
 name:'login',
@@ -45,15 +45,16 @@ name:'login',
                 name:"个人登录",
                 type:"1"
             },
-            {
-                name:"团队登录",
-                type:"2"
-            }
+            // {
+            //     name:"团队登录",
+            //     type:"2"
+            // }
         ],
         userType:"1",
         phone:"",
         password:"",
-        redirectPath:""
+        redirectPath:"",
+        isLogin:false
     };
   },
   mounted(){
@@ -66,7 +67,7 @@ name:'login',
       seleType(type){
           this.userType=type
       },
-      forgetPwd(){
+      forgetPwds(){
           this.$router.push('/findPwd')
       },
       login(){
@@ -80,18 +81,24 @@ name:'login',
           }else if(!password){
               toggleModal("请输入密码");
               return;
+          }else if(password.trim().length<6){
+              toggleModal("密码长度不能小于6位");
+              return;
           }
+          this.isLogin=true;
           this.req_login([{phone,password},(data)=>{
               if(data.state===200){
                   toggleModal('登录成功');
+                  this.isLogin=false;
                   setTimeout(()=>{
                       this.redirectPath?this.$router.replace(this.redirectPath):this.$router.replace('/main')
                   },1000);
               }else{
                   toggleModal(data.message);
+                  this.isLogin=false;
               }
           }])
-        
+
       },
       goRegist(){
           this.$router.push('/regist')
@@ -108,10 +115,10 @@ name:'login',
         background-size: cover;
     }
     .contents{
-        padding: 2.5rem;
+        padding: 2.5rem 2.4rem;
         box-sizing: border-box;
         .login-type-bar{
-            margin-bottom: 2.3rem;
+            margin-bottom: 2.9rem;
             .type-list{
                 display: flex;
                 li{
@@ -119,7 +126,6 @@ name:'login',
                     font-size: .9rem;
                     text-align: center;
                     line-height: 1rem;
-                    color: #000;
                 }
                 li.on{
                     color: #ff0000;
@@ -142,7 +148,7 @@ name:'login',
                 }
                 .row-input{
                     flex: 1;
-                    border-bottom: 1px solid #999;
+                    border-bottom: 1px solid rgb(204,204,204);
                     line-height: 1.5rem;
                     font-size: .75rem;
                 }
@@ -150,15 +156,15 @@ name:'login',
             .last{
                 margin-bottom: 0;
             }
-            
+
             .forget-pwd-bar{
                 text-align: right;
                 color: #ff0000;
-                line-height: 1.5rem;
-                font-size: .7rem;
+                font-size: .75rem;
+                margin-top: 7.5px;
             }
             .btn-block{
-                margin-top: 3.4rem;
+                margin-top: 2rem;
                 div{
                     height: 2rem;
                     line-height: 2rem;
@@ -169,7 +175,14 @@ name:'login',
                 .login-btn{
                     background: #ff0000;
                     color: #fff;
-                    margin-bottom: .8rem;
+                    margin-bottom: 1rem;
+                    display: block;
+                    height: 2rem;
+                    line-height: 2rem;
+                    width: 100%;
+                    border-radius: .8rem;
+                    font-size: .9rem;
+                    text-align: center;
                 }
                 .regist-btn{
                     border:1px solid #ff0000;

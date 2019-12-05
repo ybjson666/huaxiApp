@@ -1,5 +1,7 @@
 
 export default{
     wishList:[],
-    wish:{}
+    wishInfo:{
+        wish:{}
+    }
 }

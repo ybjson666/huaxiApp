@@ -25,7 +25,7 @@
             <div class="desire-block">
                 <Captions captionTxt="心愿列表"/>
                 <div class="desire-wraps block">
-                    <div class="desire-info" @click="seekInfo('wish',desire.wishid)">
+                    <div class="desire-info" @click="seekInfo('wish',desire.wishid)" v-for="(desire,index) in wishList" :key="index">
                         <p class="title">
                             <img src="../assets/images/wish.png" alt="">
                             <span>{{desire.title}}</span>
@@ -59,7 +59,7 @@
                     <div class="seek-more" @click="seekMore('source')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""/></span></div> 
                 </div>
             </div>
-            <Loading v-show="isLoading"/>
+            <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
         </div>
     </div>
 </template>
@@ -71,6 +71,7 @@ import Captions from '@/components/Captions'
 import Loading from '@/components/Loading'
 import { mapActions,mapState } from 'vuex'
 import { toggleModal } from '../utils/tools'
+import { nextTick } from 'q'
 export default {
 name:'desire',
   data () {
@@ -128,22 +129,29 @@ name:'desire',
       Loading
   },
   created(){
-      this.req_Wish([{isHomePage:'Y',state:0,pageNo:1,pageSize:1},true,(data=>{
-          this.isLoading=false;
-          if(data.state!==200){
+      this.req_Wish([{isHomePage:'Y',state:0,pageNo:1,pageSize:1},true,data=>{
+            this.isLoading=false;
+            if(data.state!==200&&data.state!==700004){
               toggleModal(data.message);
-          }
-      })])
+            }else if(data.state===700004){
+                toggleModal(data.message);
+                setTimeOut(()=>{
+                    this.$router.push('/login');
+                },1000);
+              
+            }
+      }])
+  },
+  beforeRouteEnter (to, from, next) {
+    if(from.name=='wishInfo'|| from.name=='sourceInfo'){
+        to.meta.keepAlive=true
+    }else{
+      to.meta.keepAlive=false
+    }
+    next();
   },
   computed:{
       ...mapState('wish',['wishList']),
-      desire(){
-          let desireObj={};
-          if(this.wishList.length){
-              desireObj=this.wishList[0]
-          }
-          return desireObj;
-      }
   },
   methods: {
       ...mapActions('wish',['req_Wish']),
@@ -151,25 +159,25 @@ name:'desire',
         switch(type){
             case 'desire':
                 this.$router.push('/wishList');
-                return;
+                break;
             case 'source':
                 this.$router.push('/sourceList');
-                return;
+                break;
             case 'vote':
                 this.$router.push('/voteList');
-                return;
+                break;
         }
     },
     seekInfo(type,id){
         switch(type){
             case 'wish':
                 this.$router.push(`/wishInfo/${id}`);
-                return;
+                break;
             case 'source':
                 this.$router.push(`/sourceInfo/${id}`);
-                return;
+                break;
             case 'actv':
-                return;
+                break;
         }
         // this.$router.push(`/wishInfo/${id}`)
     }
@@ -181,10 +189,11 @@ name:'desire',
 .desire-container{
     height: 100%;
     .desire-contents{
-        height: calc(100% - 2rem);
+        height: calc(100% - 2.5rem);
         background: #f0f0f0;
         overflow-y: scroll;
         position: relative;
+        -webkit-overflow-scrolling: touch;
         .top-bar{
             height: 6rem;
         }
@@ -230,7 +239,7 @@ name:'desire',
                     h2{
                         text-align: center;
                         font-size: 1rem;
-                        padding-top: 1rem;
+                        padding-top: 1.3rem;
                         box-sizing: border-box;
                         margin-bottom: .3rem;
                     }
@@ -242,13 +251,13 @@ name:'desire',
                         text-align: center;
                         span{
                             color: #ff0000;
-                            font-size: .8rem;
+                            font-size: .65rem;
                             background: #fff;
                             border-radius: 1rem;
                             display: inline-block;
-                            height: 1.3rem;
-                            line-height: 1.3rem;
-                            width: 5rem;
+                            height: 1.2rem;
+                            line-height: 1.2rem;
+                            width: 4.2rem;
                             text-align: center;
                             img{
                                 width: .5rem;
@@ -335,11 +344,11 @@ name:'desire',
                             box-sizing: border-box;
                             border-radius: 3px;
                             margin-bottom: .5rem;
-                            padding: .8rem .5rem;
+                            padding: 1rem .5rem;
                             div{
                                 color: #000;
                                 font-size: .8rem;
-                                margin-bottom: .4rem;
+                                margin-bottom: .8rem;
                                 img{
                                     width: .8rem;
                                     margin-right: .2rem;
@@ -347,7 +356,7 @@ name:'desire',
                             }
                             p{
                                 color: #808080;
-                                line-height: 1.25rem;
+                                margin-bottom: .7rem;
                             }
                         }
                         .li-bar{

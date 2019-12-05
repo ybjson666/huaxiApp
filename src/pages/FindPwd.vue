@@ -28,7 +28,7 @@
 
 <script>
 import HeadBar from '@/components/HeadBar'
-import { getVerifyCode,findPwds} from '../utils/api'
+import { getVerifyCode2,findPwds} from '../utils/api'
 import { toggleModal,reg_phone,reg_pwd } from '../utils/tools'
 export default {
 name:'findPwd',
@@ -58,7 +58,7 @@ name:'findPwd',
             return;
         }
         this.isGet=false;
-        getVerifyCode(phone).then((data)=>{
+        getVerifyCode2(phone).then((data)=>{
             toggleModal("发送成功");
             setTimeout(()=>{
                 var sec=60;
@@ -77,7 +77,6 @@ name:'findPwd',
         })
       },
       submiting(){
-
           const { phone,verify,newpassword,repassword } =this;
 
           if(!phone){
@@ -92,14 +91,14 @@ name:'findPwd',
             }else if(!newpassword){
                 toggleModal('请输入新密码！');
                 return;
-            }else if(!reg_pwd.test(newpassword)){
-                toggleModal('密码格式错误！');
+            }else if(newpassword.trim().length<6){
+                toggleModal('密码长度不能小于6位！');
                 return;
             }else if(!repassword){
                 toggleModal('请再次输入新密码！');
                 return;
-            }else if(!reg_pwd.test(repassword)){
-                toggleModal('密码格式错误！');
+            }else if(repassword.trim().length<6){
+                toggleModal('密码长度不能小于6位！');
                 return;
             }else if(newpassword !== repassword){
                 toggleModal('两次密码不一致！');
@@ -112,6 +111,9 @@ name:'findPwd',
                 if(data.state==200){
                     toggleModal("修改成功");
                     this.isUse=false;
+                    setTimeout(()=>{
+                        this.$router.go(-1);
+                    },1000)
                 }else{
                     toggleModal(data.message);
                     this.isUse=false;
@@ -125,39 +127,49 @@ name:'findPwd',
 <style lang='scss' scoped>
 .findPwd-container{
     height: 100%;
+    background: #f5f5f5;
     .password-contents{
-        height: calc(100% - 2rem);
-        padding-top:.8rem;
+        height: calc(100% - 2.5rem);
+        padding-top:1rem;
         box-sizing: border-box;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
         .password-box{
-            padding: .5rem;
-            padding-bottom: 0;
+            padding: 0 .75rem;
             box-sizing: border-box;
             .rows{
                 display: flex;
                 border-bottom: 1px solid #f5f5f5;
-                height: 2rem;
+                padding: 1rem 0;
                 box-sizing: border-box;
+                position: relative;
                 .label{
-                    width: 4.5rem;
-                    line-height: 2rem;
-                    color: #000;
-                    font-size: .75rem;
+                    width: 5.5rem;
+                    color: rgb(26,26,26);
+                    font-size: .85rem;
                 }
                 .rows-input{
-                    width: 9rem;
+                    flex: 1;
+                    font-size: .75rem;
+                }
+                .rows-input::-webkit-input-placeholder{
+                    color: rgb(153,153,153);
                     font-size: .75rem;
                 }
                 .code{
                     color: #ff0000;
                     width: 4rem;
                     text-align: center;
+                    position: absolute;
+                    right: 0;
+                    top:1rem;
+                    font-size: .75rem;
                 }
             }
         }
         .modify-btn{
             margin: 0 auto;
-            margin-top: 3rem;
+            margin-top: 4.45rem;
         } 
     }
 }
