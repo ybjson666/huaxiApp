@@ -13,7 +13,7 @@
                   <button class="code" :disabled="isGet" @click="getCode">获取验证码</button>
               </div>
           </div>
-          <button class="modify-btn" @click="submiting">确认修改</button>
+          <button class="modify-btn btn" @click="submiting">确认修改</button>
       </div>
   </div>
 </template>
@@ -54,7 +54,7 @@ name:'phone',
 .phone-container{
     height: 100%;
     .phone-contents{
-        height: calc(100% - 2.5rem);
+        height: calc(100% - 2rem);
         background: #f0f0f0;
         padding-top:.8rem;
         box-sizing: border-box;
@@ -85,16 +85,9 @@ name:'phone',
             }
         }
         .modify-btn{
-            width: 12.5rem;
-            height: 2rem;
-            background: #ff0000;
-            color: #fff;
-            text-align: center;
-            line-height: 2rem;
-            border-radius: .8rem;
             margin: 0 auto;
             margin-top: 3rem;
-            font-size: .8rem;
+           
         } 
     }
 }

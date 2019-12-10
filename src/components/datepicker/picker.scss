@@ -24,8 +24,8 @@
     }
   }
 }
-.fade-enter-active{ animation: fadeIn .5s }
-.fade-leave-active{ animation: fadeOut .5s }
+.fade-enter-active{ animation: fadeIn .3s }
+.fade-leave-active{ animation: fadeOut .3s }
 @keyframes fadeIn{
   0%{ opacity: 0; }
   100%{ opacity: 1; }
@@ -34,8 +34,8 @@
   0%{ opacity: 1; }
   100%{ opacity: 0; }
 }
-.slide-enter-active{ animation: fadeUp .5s }
-.slide-leave-active{ animation: fadeDown .5s }
+.slide-enter-active{ animation: fadeUp .3s }
+.slide-leave-active{ animation: fadeDown .3s }
 @keyframes fadeUp{
   0%{ opacity: .6; transform: translateY(100%); }
   100%{ opacity: 1; transform: translateY(0); }

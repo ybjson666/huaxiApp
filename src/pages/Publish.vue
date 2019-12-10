@@ -31,7 +31,7 @@
         </div>
         <div class="sele-rows" @click="openFrame('servArea')">
           <span class="sele-label">服务地区</span>
-          <input type="text" placeholder="请选择服务地区" v-model="servAreaName" readonly class="sele-row-input" id="city-box" @input="getVal"/>
+          <input type="text" placeholder="请选择服务地区" v-model="servAreaName" readonly class="sele-row-input"/>
           <span class="arrow"><img src="../assets/images/into.png" alt=""></span>
         </div>
         <div class="sele-rows">
@@ -162,11 +162,11 @@ name:'publish',
     ...mapActions('user',['req_getServices','req_servAreas']),
     chooseService(item){
         this.seekService=false;
-        this.wishtype=item.dictionaryId;
+        this.wishtype=item;
     },
     chooseServArea(item){
         this.seekServArea=false;
-        this.areaid=item.dictionaryId;
+        this.areaid=item;
     },
     openFrame(type){
       if(type==='service'){
@@ -182,10 +182,6 @@ name:'publish',
       }else{
         this.seekServArea=false;
       }
-    },
-    getVal(e) {
-      console.log(e.target.value,e.target.getAttribute('codeStr'))
-        this.isShow = false;
     },
     chooseTime(){
       this.showDatePicker=true;

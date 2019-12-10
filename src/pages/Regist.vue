@@ -152,7 +152,7 @@ name:'regist',
     .regist-contents{
         padding: 1rem 1.8rem;
         box-sizing: border-box;
-        height:calc(100% - 2.5rem);
+        height:calc(100% - 2rem);
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
         .user-pic{

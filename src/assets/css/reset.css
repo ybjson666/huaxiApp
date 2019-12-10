@@ -177,3 +177,63 @@
   height: .85rem;
   background: #f0f0f0;
 }
+.contents-wraps{
+  height: 100%;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+.contents-wraps::-webkit-scrollbar{
+  display: none;
+}
+.popuer{
+  width: 101%;
+}
+.picker-toolbar{
+  height: 60px;
+  margin-bottom: 20px;
+}
+.picker-title-bar{
+  display: flex;
+  width: 100%;
+}
+.picker-title-bar span{
+  flex: 1;
+  text-align: center;
+  line-height: 60px;
+  font-size: .75rem;
+}
+.picker-title-bar .cancel-btn{
+  color: #666;
+}
+.picker-title-bar .sure-btn{
+  color: #f39c1c;
+}
+.picker-title-bar h2{
+  flex: 4;
+  text-align: center;
+  line-height: 60px;
+  font-size: .8rem;
+  color: #000;
+}
+.picker-slot{
+  font-size: .8rem!important;
+}
+.mint-tabbar > .mint-tab-item.on{
+  color: #ff0000 !important;
+}
+.mint-tab-item-icon {
+  width: .9rem !important;
+  height: .9rem !important;
+}
+.mint-tab-item-label{
+  font-size: .75rem !important;
+}
+.mint-tabbar{
+  background: #fff !important;
+  border-top:1px solid #f0f0f0;
+  box-sizing: border-box;
+}
+.mint-tabbar > .mint-tab-item.is-selected{
+  background: transparent !important;
+}

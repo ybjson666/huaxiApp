@@ -49,7 +49,7 @@
                                 </p>
                                 <p class="actv-addr-wraps">
                                     <span class="addr-icon"><img src="../assets/images/address.png" alt=""></span>
-                                    <span class="actv-addr">{{item.address}}</span>
+                                    <span class="actv-addr">{{item.address | curtWords(13)}}</span>
                                 </p>
                             </div>
                             <div class="actv-mark" v-if="item.applyState==='3'"><img src="../assets/images/failure.png" alt=""></div>
@@ -208,7 +208,7 @@ name:'active',
         }
     }
     .active-contents{
-        height: calc(100% - 4.5rem);
+        height: calc(100% - 4rem);
         position: relative;
         .actv-wraper{
             height: calc(100% - .85rem);
@@ -272,7 +272,7 @@ name:'active',
                         .actv-bottom{
                             position: absolute;
                             width: 100%;
-                            bottom: .4rem;
+                            bottom: -.2rem;
                             left: 0;
                             color: #808080;
                             font-size: .65rem;
@@ -300,6 +300,7 @@ name:'active',
                                 display: block;
                                 font-size: .85rem;
                                 width: 7rem;
+                                margin-top:-.14rem;
                             }
                             .cancel{
                                 text-decoration: underline;

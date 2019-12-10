@@ -162,7 +162,7 @@ const routes=[
     component:()=>import('@/pages/Recruit.vue'),
     meta:{
       requireAuth:true,
-      keepAlive:true
+      keepAlive:false
     }
   },
   {
@@ -180,7 +180,7 @@ const routes=[
     component:()=>import('@/pages/ActvInfo.vue'),
     meta:{
       requireAuth:true,
-      keepAlive:true,
+      keepAlive:false,
       lastPath:""
     }
   },
@@ -190,7 +190,7 @@ const routes=[
     component:()=>import('@/pages/Apply.vue'),
     meta:{
       requireAuth:true,
-      keepAlive:true
+      keepAlive:false
     }
   },
   {
@@ -244,7 +244,7 @@ const routes=[
     component:()=>import('@/pages/WishInfo.vue'),
     meta:{
       requireAuth:true,
-      keepAlive:true,
+      keepAlive:false,
       lastPath:""
     }
   },
@@ -280,7 +280,7 @@ const routes=[
         component:()=>import('@/pages/Hunger.vue'),
         meta:{
           requireAuth:true,
-          keepAlive:true
+          keepAlive:false
         }
       },
       {
@@ -289,7 +289,7 @@ const routes=[
         component:()=>import('@/pages/Desire.vue'),
         meta:{
           requireAuth:true,
-          keepAlive:true
+          keepAlive:false
         }
       },
       {

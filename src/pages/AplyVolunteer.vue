@@ -4,61 +4,63 @@
       <head-bar title="志愿者申请"></head-bar>
     </div>
     <div class="volunteer-contents">
-        <div class="rows">
-          <span class="label">姓名</span>
-          <input type="text" class="row-input" placeholder="请填写真实姓名" v-model="userInfo.realName" readonly/>
-        </div>
-        <div class="rows">
-          <span class="label">身份证号码</span>
-          <input type="text" class="row-input" placeholder="请填写身份证号码" v-model="userInfo.idcardno" readonly/>
-        </div>
-        <div class="upload-row">
-          <p class="upload-tags">身份证照片</p>
-          <div class="upload-wraps">
-            <div class="upload-item face-item">
-              <img :src="userInfo.idcardfronturl" alt="" v-if="userInfo.idcardfronturl" />
-              <img src="../assets/images/card1.png" alt="" v-else />
-            </div>
-            <div class="upload-item ">
-              <img :src="userInfo.idcardbackurl" alt="" v-if="userInfo.idcardbackurl" />
-              <img src="../assets/images/card2.png" alt="" v-else />
+        <div class="contents-wraps">
+          <div class="rows">
+            <span class="label">姓名</span>
+            <input type="text" class="row-input" placeholder="请填写真实姓名" v-model="userInfo.realName" readonly/>
+          </div>
+          <div class="rows">
+            <span class="label">身份证号码</span>
+            <input type="text" class="row-input" placeholder="请填写身份证号码" v-model="userInfo.idcardno" readonly/>
+          </div>
+          <div class="upload-row">
+            <p class="upload-tags">身份证照片</p>
+            <div class="upload-wraps">
+              <div class="upload-item face-item">
+                <img :src="userInfo.idcardfronturl" alt="" v-if="userInfo.idcardfronturl" />
+                <img src="../assets/images/card1.png" alt="" v-else />
+              </div>
+              <div class="upload-item ">
+                <img :src="userInfo.idcardbackurl" alt="" v-if="userInfo.idcardbackurl" />
+                <img src="../assets/images/card2.png" alt="" v-else />
+              </div>
             </div>
           </div>
+          <div class="arrow-row">
+            <span class="label">政治面貌</span>
+            <input type="text" class="row-input" placeholder="请选择政治面貌" v-model="politName" readonly />
+            <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
+          </div>
+          <div class="arrow-row">
+            <span class="label">学历</span>
+            <input type="text" class="row-input" placeholder="请选择学历" v-model="educaName" readonly/>
+            <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
+          </div>
+          <div class="arrow-row" >
+            <span class="label">服务类型</span>
+            <input type="text" class="row-input" placeholder="请选择服务类型" v-model="serviceName" readonly/>
+            <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
+          </div>
+          <div class="arrow-row">
+            <span class="label">服务区域</span>
+            <input type="text" class="row-input" placeholder="请选择服务区域" v-model="servAreaName" readonly/>
+            <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
+          </div>
+          <div class="rows">
+            <span class="label">家庭住址</span>
+            <input type="text" class="row-input" placeholder="请填写家庭住址" v-model="userInfo.address" readonly/>
+          </div>
+          <div class="rows">
+            <span class="label">电子邮箱</span>
+            <input type="text" class="row-input" placeholder="请填写邮箱" v-model="userInfo.email" readonly/>
+          </div>
+          <div class="rows">
+            <span class="label">联系电话</span>
+            <input type="text" class="row-input" placeholder="请填写联系电话" v-model="userInfo.userMobile" readonly/>
+          </div>
+          <p class="info" v-show="!isOver">*信息不完善，请先到个人信息去完善</p>
+          <button class="sub-btn btn" @click="apply" :disabled="isUse" :class="{btnGray:isUse}">提交申请</button>
         </div>
-        <div class="arrow-row">
-          <span class="label">政治面貌</span>
-          <input type="text" class="row-input" placeholder="请选择政治面貌" v-model="politName" readonly />
-          <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
-        </div>
-        <div class="arrow-row">
-          <span class="label">学历</span>
-          <input type="text" class="row-input" placeholder="请选择学历" v-model="educaName" readonly/>
-          <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
-        </div>
-        <div class="arrow-row" >
-          <span class="label">服务类型</span>
-          <input type="text" class="row-input" placeholder="请选择服务类型" v-model="serviceName" readonly/>
-          <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
-        </div>
-        <div class="arrow-row">
-          <span class="label">服务区域</span>
-          <input type="text" class="row-input" placeholder="请选择服务区域" v-model="servAreaName" readonly/>
-          <span class="arrow"><img src="../assets/images/into.png" alt=""/></span>
-        </div>
-        <div class="rows">
-          <span class="label">家庭住址</span>
-          <input type="text" class="row-input" placeholder="请填写家庭住址" v-model="userInfo.address" readonly/>
-        </div>
-        <div class="rows">
-          <span class="label">电子邮箱</span>
-          <input type="text" class="row-input" placeholder="请填写邮箱" v-model="userInfo.email" readonly/>
-        </div>
-        <div class="rows">
-          <span class="label">联系电话</span>
-          <input type="text" class="row-input" placeholder="请填写联系电话" v-model="userInfo.userMobile" readonly/>
-        </div>
-        <p class="info">*信息不完善，请先到个人信息去完善</p>
-        <button class="sub-btn btn" @click="apply" :disabled="isUse" :class="{btnGray:isUse}">提交申请</button>
         <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
     </div>
   </div>
@@ -68,14 +70,15 @@
 import HeadBar from '@/components/HeadBar'
 import Loading from '@/components/Loading'
 import { applyVolun} from '../utils/api'
-import { toggleModal,BASE_URL } from '../utils/tools'
+import { toggleModal,BASE_URL, loadMoreData } from '../utils/tools'
 import { mapState,mapActions,mapGetters } from 'vuex';
 export default {
 name:'AplyVolunteer',
   data () {
     return {
       isUse:false,
-      isLoading:true
+      isLoading:true,
+      isOver:true
     };
   },
 
@@ -171,7 +174,7 @@ name:'AplyVolunteer',
   methods: {
     ...mapActions('user',['req_restUserPic','req_getServices','req_backgrounds','req_servAreas','req_getUser']),
     apply(){
-      const { realName,idcardno,idcardfronturl,idcardbackurl,politicallevel,education,servicetype,servicearea,address,email,userMobile}=this.userInfo;
+      const { realName,idcardno,idcardfronturl,idcardbackurl,politicallevel,education,servicetype,servicearea,address,email,userMobile,customerid}=this.userInfo;
       
       if(!realName||realName=='undefined'){
         toggleModal('请填写姓名');
@@ -209,7 +212,7 @@ name:'AplyVolunteer',
       }
 
       this.isUse=true;
-      applyVolun({customername:realName,idcardno,servicetype,servicearea,email,education,politicallevel,address,idcardfronturl,idcardbackurl}).then(data=>{
+      applyVolun({customername:realName,idcardno,servicetype,servicearea,email,education,politicallevel,address,idcardfronturl,idcardbackurl,customerid}).then(data=>{
         if(data.state===200){
           toggleModal("申请成功");
           this.isUse=false;
@@ -230,6 +233,7 @@ name:'AplyVolunteer',
       Object.keys(user).forEach(key=>{
         if(!user[key]){
           this.isUse=true;
+          this.isOver=false;
           return;
         }
       })
@@ -255,8 +259,6 @@ name:'AplyVolunteer',
     box-sizing: border-box;
     height: 100%;
     padding-top: 3rem;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
     position: relative;
     .rows{
       border-bottom: 1px solid #f5f5f5;

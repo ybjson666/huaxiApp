@@ -1,7 +1,7 @@
 <template>
   <div class='login-container'>
     <div class="bg-capture"></div>
-    <div class="contents">
+    <div class="login-contents">
         <div class="login-type-bar">
             <ul class="type-list">
                 <li v-for="(item,index) in typeList" :key="index"
@@ -109,12 +109,13 @@ name:'login',
 </script>
 <style lang='scss' scoped>
 .login-container{
+    height: 100%;
     .bg-capture{
         height:8.9rem;
         background: url('../assets/images/bg1.png') no-repeat;
         background-size: cover;
     }
-    .contents{
+    .login-contents{
         padding: 2.5rem 2.4rem;
         box-sizing: border-box;
         .login-type-bar{

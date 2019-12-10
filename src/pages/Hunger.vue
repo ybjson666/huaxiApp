@@ -2,81 +2,83 @@
   <div class='hunger-container'>
     <head-bar title="志愿活动" :showBack="showBack"/>
     <div class="hunger-contents">
-      <div class="top-bar"></div>
-        <div class="navgitors block">
-          <Navgitor :dataSource="dataSource"/>
-        </div>
-        <div class="actv-block">
-          <div class="block-head block">
-            <Captions captionTxt="志愿招募"/>
+        <div class="contents-wraps">
+          <div class="top-bar"></div>
+          <div class="navgitors block">
+            <Navgitor :dataSource="dataSource"/>
           </div>
-          <div class="actv-wraps block">
-            <ul class="hunger-list">
-                <li v-for="(item,index) in votList" :key="index" @click="seekInfo(item.activityrecruitid)">
-                  <div class="item-wraps">
-                    <div class="hunger-pic">
-                      <img :src="item.cover" alt="">
-                    </div>
-                    <div class="hunger-infos">
-                      <h2>{{item.activityname | curtWords(9)}}</h2>
-                      <div class="hunger-bottom">
-                          <p>
-                            <span class="row-icon time-icon"><img src="../assets/images/time.png" alt=""></span>
-                            <span>{{item.subdate}}</span>
-                          </p>
-                          <p>
-                            <span class="row-icon num-icon"><img src="../assets/images/user.png" alt=""></span>
-                            <span v-if="item.recruitcount==0">{{item.hascount}}/不限制</span>
-                            <span v-else>{{item.hascount}}/{{item.recruitcount}}</span>
-                          </p>
-                          <p>
-                            <span class="row-icon addr-icon"><img src="../assets/images/address.png" alt=""></span>
-                            <span>{{item.address | curtWords(12)}}</span>
-                          </p>
+          <div class="actv-block">
+            <div class="block-head block">
+              <Captions captionTxt="志愿招募"/>
+            </div>
+            <div class="actv-wraps block">
+              <ul class="hunger-list">
+                  <li v-for="(item,index) in votList" :key="index" @click="seekInfo(item.activityrecruitid)">
+                    <div class="item-wraps">
+                      <div class="hunger-pic">
+                        <img :src="item.cover" alt="">
                       </div>
-                    </div>
-                    <div class="type-tag red" v-if="item.state=='1'">
-                      <span class="tag-txt">招募中</span>
-                    </div>
-                    <div class="type-tag orange" v-else-if="item.state=='2'">
-                      <span class="tag-txt">进行中</span>
-                    </div>
-                    <div class="type-tag gray" v-else-if="item.state=='3'">
-                      <span class="tag-txt">未开始</span>
-                    </div>
+                      <div class="hunger-infos">
+                        <h2>{{item.activityname | curtWords(20)}}</h2>
+                        <div class="hunger-bottom">
+                            <p>
+                              <span class="row-icon time-icon"><img src="../assets/images/time.png" alt=""></span>
+                              <span>{{item.subdate}}</span>
+                            </p>
+                            <p>
+                              <span class="row-icon num-icon"><img src="../assets/images/user.png" alt=""></span>
+                              <span v-if="item.recruitcount==0">{{item.hascount}}/不限制</span>
+                              <span v-else>{{item.hascount}}/{{item.recruitcount}}</span>
+                            </p>
+                            <p>
+                              <span class="row-icon addr-icon"><img src="../assets/images/address.png" alt=""></span>
+                              <span>{{item.address | curtWords(12)}}</span>
+                            </p>
+                        </div>
+                      </div>
+                      <div class="type-tag red" v-if="item.state=='1'">
+                        <span class="tag-txt">招募中</span>
+                      </div>
+                      <div class="type-tag orange" v-else-if="item.state=='2'">
+                        <span class="tag-txt">进行中</span>
+                      </div>
+                      <div class="type-tag gray" v-else-if="item.state=='3'">
+                        <span class="tag-txt">未开始</span>
+                      </div>
+                      </div>
+                      <div class="li-bar"></div>
+                  </li>
+              </ul>
+              <div class="seek-more" @click="seekMore('recruit')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""></span></div> 
+            </div>
+          </div>
+          <div class="mien-block">
+            <div class="mien-head block">
+              <Captions captionTxt="志愿风采"/>
+            </div>
+            <div class="mien-wraps block">
+                <ul class="mien-list">
+                  <li v-for="(item,index) in mienList" :key="index" @click="openFunc">
+                    <div class="item-wraps">
+                      <div class="mien-pic"><img :src="item.pic" alt=""></div>
+                      <div class="mienInfos">
+                        <h2>{{item.name}}</h2>
+                        <div class="mienBottom">
+                          <p class="addtime">{{item.addTime}}</p>
+                          <p class="scans">
+                            <span class="scan-pic"><img src="../assets/images/browse.png" alt=""></span>
+                            <span>{{item.sacn_num}}</span>
+                          </p>
+                        </div>
+                      </div>
                     </div>
                     <div class="li-bar"></div>
-                </li>
-            </ul>
-            <div class="seek-more" @click="seekMore('recruit')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""></span></div> 
+                  </li>
+                </ul>
+                <div class="seek-more" @click="seekMore('mien')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""></span></div> 
+            </div>
+             
           </div>
-        </div>
-        <div class="mien-block">
-          <div class="mien-head block">
-            <Captions captionTxt="志愿风采"/>
-          </div>
-          <div class="mien-wraps block">
-              <ul class="mien-list">
-                <li v-for="(item,index) in mienList" :key="index" @click="seekInfo(item.id)">
-                  <div class="item-wraps">
-                    <div class="mien-pic"><img :src="item.pic" alt=""></div>
-                    <div class="mienInfos">
-                      <h2>{{item.name}}</h2>
-                      <div class="mienBottom">
-                        <p class="addtime">{{item.addTime}}</p>
-                        <p class="scans">
-                          <span class="scan-pic"><img src="../assets/images/browse.png" alt=""></span>
-                          <span>{{item.sacn_num}}</span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="li-bar"></div>
-                </li>
-              </ul>
-              <div class="seek-more" @click="seekMore('mien')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""></span></div> 
-          </div>
-           
         </div>
         <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
     </div>
@@ -100,12 +102,14 @@ name:'hunger',
         {
           icon:require('../assets/images/recruit.png'),
           name:"志愿招募",
-          path:'/recruit'
+          path:'/recruit',
+          needVolun:false
         },
         {
           icon:require('../assets/images/activity.png'),
           name:"志愿风采",
-          path:'/mien'
+          path:'/mien',
+          needVolun:false
         }
       ],
       mienList:[
@@ -140,22 +144,22 @@ name:'hunger',
     Captions,
     Loading
   },
-  beforeRouteEnter (to, from, next) {
-    if(from.name=='actvInfo'){
-        to.meta.keepAlive=true
-    }else{
-      to.meta.keepAlive=false
-    }
-    next()
-  },
+  // beforeRouteEnter (to, from, next) {
+  //   if(from.name=='actvInfo'){
+  //       to.meta.keepAlive=true
+  //   }else{
+  //     to.meta.keepAlive=false
+  //   }
+  //   next()
+  // },
   computed:{
-    ...mapState('volunteer',{
-      votList:state=>state.votList
+    ...mapState({
+      votList:state=>state.volunteer.votList,
+      userInfo:state=>state.user.userInfo
     })
   },
   created(){
     this.req_Vots([{isAll:'N',state:0,areaId:'N'},true,data=>{
-      this.isLoading=false;
       if(data.state!==200&&data.state!==700004){
             toggleModal(data.message);
       }else if(data.state===700004){
@@ -165,6 +169,17 @@ name:'hunger',
         },1000);
       }
     }])
+    this.req_getUser(data=>{
+      this.isLoading=false;
+      if(data.state!==200&&data.state!==700004){
+              toggleModal(data.message);
+        }else if(data.state===700004){
+            toggleModal(data.message);
+            setTimeout(()=>{
+                this.$router.push('/login');
+            },1000);
+        }
+    })
   },
   filters:{
     // curtWords(val,num){
@@ -180,12 +195,35 @@ name:'hunger',
     // }
   },
   methods: {
-    ...mapActions('volunteer',['req_Vots']),
+    ...mapActions({
+       req_Vots:'volunteer/req_Vots',
+       req_getUser:'user/req_getUser'
+    }),
     seekMore(type){
-      type==='recruit'?this.$router.push('/recruit'):this.$router.push('/mien');
+      const { isvolunteer} =this.userInfo;
+      switch(type){
+        case 'recruit':
+          if(isvolunteer==0){
+            toggleModal('志愿者方可进行此操作~');
+          }else{
+            this.$router.push('/recruit')
+          }
+          break;
+          case 'mien':
+          this.$router.push('/mien');
+          break;
+      }
     },
     seekInfo(id){
-      this.$router.push(`/actvInfo/${id}`)
+      const { isvolunteer} =this.userInfo;
+        if(isvolunteer==0){
+          toggleModal('志愿者方可进行此操作~');
+        }else{
+          this.$router.push(`/actvInfo/${id}`)
+        }
+    },
+    openFunc(){
+      toggleModal("功能正在开发中...")
     }
   }
 }
@@ -195,11 +233,8 @@ name:'hunger',
 .hunger-container{
     height: 100%;
     .hunger-contents{
-      height: calc(100% - 2.5rem);
-        background: #f0f0f0;
-        overflow-y: scroll;
+        height: calc(100% - 2rem);
         position: relative;
-        -webkit-overflow-scrolling: touch;
         .top-bar{
             height: 6rem;
         }
@@ -275,18 +310,18 @@ name:'hunger',
                     h2{
                       font-size: .85rem;
                       color:rgb(26,26,26);
-                      font-weight: normal;
+                      margin-top: -.17rem;
                     }
                     .hunger-bottom{
                       position: absolute;
                       width: 100%;
                       left: 0;
-                      bottom: 0;
+                      bottom: -.2rem;
                       font-size: .65rem;
                       color: rgb(127,127,127);
                         p{
-                          font-size: .6rem;
-                          margin-bottom: .2rem;
+                          font-size: .65rem;
+                          margin-bottom: .05rem;
                           &:last-child{
                             margin: 0;
                           }
@@ -296,13 +331,13 @@ name:'hunger',
                             vertical-align: middle;
                           }
                           .time-icon{
-                            width: .7rem;
+                            width: .6rem;
                           }
                           .num-icon{
-                            width: .8rem;
+                            width: .7rem;
                           }
                           .addr-icon{
-                            width: .6rem;
+                            width: .55rem;
                           }
                         }
                       }
@@ -365,8 +400,7 @@ name:'hunger',
                     height: 5rem;
                     position: relative;
                     h2{
-                      font-size: .75rem;
-                      color: #000;
+                      font-size: .85rem;
                     }
                     .mienBottom{
                       position: absolute;

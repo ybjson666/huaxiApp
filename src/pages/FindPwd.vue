@@ -129,7 +129,7 @@ name:'findPwd',
     height: 100%;
     background: #f5f5f5;
     .password-contents{
-        height: calc(100% - 2.5rem);
+        height: calc(100% - 2rem);
         padding-top:1rem;
         box-sizing: border-box;
         overflow-y: scroll;

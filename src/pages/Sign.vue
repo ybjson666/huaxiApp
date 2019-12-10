@@ -28,7 +28,7 @@
                                     </p>
                                     <p class="sign-addr-wraps">
                                         <span class="addr-icon"><img src="../assets/images/address.png" alt=""></span>
-                                        <span class="sign-addr">{{item.ActivityRecruit.address}}</span>
+                                        <span class="sign-addr">{{item.ActivityRecruit.address | curtWords(9)}}</span>
                                     </p>
                                 </div>
                             </div>
@@ -127,6 +127,16 @@ name:'sign',
     created(){
         this.customerid=localStorage.getItem('customerid');
         this.fetchData();
+        this.req_getUser(data=>{
+            if(data.state!==200&&data.state!==700004){
+              toggleModal(data.message);
+            }else if(data.state===700004){
+              toggleModal(data.message);
+              setTimeout(()=>{
+                this.$router.push('/login');
+              },1000);
+            }
+        })
     },
     filters:{
         filterHour(date){
@@ -137,7 +147,10 @@ name:'sign',
         }
     },
     methods: {
-        ...mapActions('volunteer',['req_signs']),
+        ...mapActions({
+            req_signs:'volunteer/req_signs',
+            req_getUser:'user/req_getUser'
+            }),
         ...mapMutations('volunteer',['set_signin_list','set_signout_list']),
         signs(id,lat,lon,radius,type){
              const { isvolunteer } =this.userInfo;
@@ -264,7 +277,7 @@ name:'sign',
 .sign-container{
     height: 100%;
     .sign-contents{
-        height: calc(100% - 2.5rem);
+        height: calc(100% - 2rem);
         background: #f0f0f0;
         .sign-wraper{
             position: relative;
@@ -297,12 +310,13 @@ name:'sign',
                             .sign-name{
                                 font-size: .85rem;
                                 font-weight: normal;
+                                margin-top: -0.14rem;
                             }
                             .sing-info-bottom{
                                 width: 100%;
                                 position: absolute;
                                 left: 0;
-                                bottom: 0;
+                                bottom: -.1rem;
                                 color: rgb(128,128,128);
                                 .sign-num-wraps{
                                     margin-bottom: .5rem;

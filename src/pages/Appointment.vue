@@ -208,7 +208,7 @@ name:'appoint',
         }
     }
     .appoint-contents{
-        height: calc(100% - 4.5rem);
+        height: calc(100% - 4rem);
         background: #f0f0f0;
         position: relative;
         .bar-tip{

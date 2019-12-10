@@ -42,6 +42,7 @@
 <script>
 import Scroller from '@/components/Scroller';
 import HeadBar from '@/components/HeadBar'
+import { toggleModal } from '../utils/tools'
 export default {
 name:'mien',
   data () {
@@ -138,7 +139,8 @@ name:'mien',
       },1000)
     },
     goInfo(id){
-      this.$router.push(`/actvInfo/${id}`);
+      // this.$router.push(`/actvInfo/${id}`);
+      toggleModal("功能正在开发中...");
     }
   }
 }

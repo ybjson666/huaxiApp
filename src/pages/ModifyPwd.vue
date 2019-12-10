@@ -45,8 +45,8 @@ name:'password',
             if(!password){
                 toggleModal('请输入原密码！');
                 return;
-            }else if(!reg_pwd.test(password)){
-                toggleModal('密码格式错误！');
+            }else if(password.length<6){
+                toggleModal('密码长度不能小于6位');
                 return;
             }else if(!newpassword){
                 toggleModal('请输入新密码！');
@@ -86,7 +86,7 @@ name:'password',
 .password-conatiner{
     height: 100%;
     .password-contents{
-        height: calc(100% - 2.5rem);
+        height: calc(100% - 2rem);
         background: #f0f0f0;
         padding-top:1rem;
         box-sizing: border-box;
@@ -99,17 +99,22 @@ name:'password',
             .rows{
                 display: flex;
                 border-bottom: 1px solid #f5f5f5;
-                padding: 1rem 0 ;
+                height:2.85rem;
                 box-sizing: border-box;
                 .label{
                     width: 3.5rem;
                     color: rgb(26,24,29);
                     font-size: .85rem;
                     margin-right: 2.7rem;
+                    line-height:2.85rem;
                 }
                 .rows-input{
                     flex: 1;
                     font-size: .75rem;
+                    line-height:2.85rem;
+                    height:2.85rem;
+                    padding: .8rem 0;
+                    box-sizing:border-box;
                 }
                 .rows-input::-webkit-input-placeholder{
                     color: rgb(153,153,153);

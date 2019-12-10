@@ -40,9 +40,7 @@
                     </div>
                     <div class="rows">
                         <span class="label">身份证号</span>
-                        <input type="text" class="rows-input place-input" 
-                        v-model="userInfo.idcardno" placeholder="请填写身份证号"
-                        oninput = "value=value.replace(/[^\d]/g,'')"/>
+                        <input type="text" class="rows-input place-input" v-model="userInfo.idcardno" placeholder="请填写身份证号"/>
                     </div>
                     <div class="upload-row">
                         <p class="upload-tags">身份证照片</p>
@@ -101,8 +99,7 @@
                     </div>
                     <div class="rows">
                         <span class="label">邮箱</span>
-                        <input type="email" class="rows-input place-input" v-model="userInfo.email" 
-                        placeholder="请填写邮箱" oninput="value=value.replace(/[\u4e00-\u9fa5]/ig,'')"/>
+                        <input type="text" class="rows-input place-input" v-model="userInfo.email" placeholder="请填写邮箱"/>
                     </div>
                     <div class="rows" @click="changePhone">
                         <span class="label">联系电话</span>
@@ -186,7 +183,7 @@
           <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
       </div>
       <city-selector :column = 3  :show="isShowAddr" idName="addr-box" :cityDatas="cityDatas"/>
-      <Picker :show="showFrame" @closeFrame="closeFrame('educa')" :dataSource="educations" title="选择学历" @chooseItem="chooseItem"/>
+      <Picker :show="showFrame" @closeFrame="closeFrame('educa')" :dataSource="educations" @chooseItem="chooseItem" title="选择学历"/>
       <Picker :show="showPolit" @closeFrame="closeFrame('polit')" :dataSource="politicls" @chooseItem="choosePolit" title="选择政治面貌"/>
       <ServicePicker :show="seekService" @closeFrame="closeFrame('service')" :dataSource="serviceTypes" @chooseItem="chooseService" title="选择服务类型"/>
       <ServicePicker :show="seekServArea" @closeFrame="closeFrame('servArea')" :dataSource="servAreas" @chooseItem="chooseServArea" title="选择服务地区"/>
@@ -202,8 +199,7 @@ import Loading from '@/components/Loading'
 import UploadLoading from '@/components/UploadLoading'
 import { mapState,mapActions,mapGetters } from 'vuex';
 import { upLoads,resetUser,resetUserPic} from '../utils/api';
-import { BASE_URL, toggleModal,searchArr,reg_idCard,reg_phone,reg_email,maxPicFile } from '../utils/tools'
-
+import { BASE_URL, toggleModal,searchArr,reg_idCard,reg_phone,maxPicFile } from '../utils/tools'
 
 export default {
 name:'person',
@@ -220,16 +216,16 @@ name:'person',
         faceUpload:false,
         backUpload:false,
         headUpload:false,
-        headSize:1,
+        headSize:1
     };
   },
     components: {
         HeadBar,
-        Loading,
-        UploadLoading,
         CitySelector,
         Picker,
-        ServicePicker
+        ServicePicker,
+        Loading,
+        UploadLoading
     },
     computed:{
         ...mapState('user',['userInfo','serviceTypes','servAreas','cityDatas']),
@@ -376,19 +372,19 @@ name:'person',
         },
         chooseItem(item){
             this.showFrame=false;
-            this.userInfo.education=item;
+            this.userInfo.education=item.DictID;
         },
         choosePolit(item){
             this.showPolit=false;
-            this.userInfo.politicallevel=item;
+            this.userInfo.politicallevel=item.DictID;
         },
         chooseService(item){
             this.seekService=false;
-            this.userInfo.servicetype=item;
+            this.userInfo.servicetype=item.dictionaryId;
         },
         chooseServArea(item){
             this.seekServArea=false;
-            this.userInfo.servicearea=item;
+            this.userInfo.servicearea=item.dictionaryId;
         },
         choosePic(type){  
             switch(type){
@@ -481,13 +477,10 @@ name:'person',
             const { idcardbackurl,idcardfronturl,realName,userNick,email,idcardno,
             address,politicallevel,education,servicetype,servicearea,areaid} =this.userInfo;
 
-            if(idcardno&&!reg_idCard.test(idcardno)){
+            if(!reg_idCard.test(idcardno)){
                 toggleModal("身份证号码格式不正确");
                 return;
-            }else if(email&&!reg_email.test(email)){
-                toggleModal("邮箱码格式不正确");
-                retutn;
-            }
+            }else if(!reg_phone.test()){}
             this.isSaved=true;
             
             resetUser({ idCardBackUrl:idcardbackurl,idCardFrontUrl:idcardfronturl,realName,email,idcardno,address,
@@ -518,8 +511,7 @@ name:'person',
                     this.isLoading=false;
                 }
             })
-        },
-        onValuesChange(){}
+        }
     },
     created(){
         this.req_getServices((data)=>{

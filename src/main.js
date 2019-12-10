@@ -8,25 +8,22 @@ import store from './store'
 import rem from './utils/rem';
 import moment from 'moment'//导入文件 
 // import lodash from 'lodash'
-import {toggleModal,isEn } from './utils/tools'
 // import animate from 'animate.css'
 Vue.prototype.moment = moment;//赋值使用
 
 Vue.use(Mint);
+
+
 Vue.config.productionTip = false;
 // Vue.use(animate);//路由动画
 
 /**全局文字长度过滤 */
 Vue.filter('curtWords',(val,num)=> {
-  if(!isEn.test(val)){
     if(val.length>num){
       return val.slice(0,num)+'...';
     }else{
       return val;
     }
-  }else{
-    return val;
-  }
 })
 
 

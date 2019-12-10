@@ -1,6 +1,8 @@
 export const reg_phone = /^(1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8})$/;
 //密码正则
 export const reg_pwd = /^(?![a-zA-Z]+$)(?!\d+$)(?![\W_]+$)\S{6,20}$/;
+//邮箱正则
+export const reg_email=/^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
 //图片地址域名
 export const BASE_URL='http://39.100.155.1:8081';
 //每页显示条数
@@ -130,17 +132,20 @@ export const ReFreshDatas=(that,actions,data,callBack)=>{
             if(data.data&&data.data.length){
                 that.pageNo++;
             }
-            that.isLoading=false;
             setTimeout(()=>{
-                that.isFresh=true;
-                that.$nextTick(()=>{
-                    setTimeout(()=>{
-                        that.isFresh=false;
-                        that.isPullDownLoading=false;
-                        callBack(data);
-                    },1000);
-                })
-            },500)
+                that.isLoading=false;
+                setTimeout(()=>{
+                    that.isFresh=true;
+                    that.$nextTick(()=>{
+                        setTimeout(()=>{
+                            that.isFresh=false;
+                            that.isPullDownLoading=false;
+                            callBack(data);
+                        },1000);
+                    })
+                },1000)
+            },800)
+            
         }else if(data.state===700004){
             toggleModal(data.message);
             that.isLoading=false;

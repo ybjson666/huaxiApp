@@ -174,7 +174,7 @@ name:'wishList',
         }
     }
     .wishList-contents{
-        height: calc(100% - 4.5rem);
+        height: calc(100% - 4rem);
         position: relative;
         .wishList-wraper{
             height: calc(100% - .85rem);

@@ -210,7 +210,7 @@ name:'wish',
         }
     }
     .wish-contents{
-        height: calc(100% - 4.5rem);
+        height: calc(100% - 4rem);
         position: relative;
         .wish-wraper{
             height: calc(100% - .85rem);

@@ -2,7 +2,7 @@
   <div class='navgitior-container'>
       <ul class="navgitor-list">
           <li v-for="(item,index) in dataSource" :key="index">
-              <div class="navgitor-wraps" @click="skipTo(item.path)">
+              <div class="navgitor-wraps" @click="skipTo(item.path,item.needVolun)">
                   <span class="nav-icons"><img :src="item.icon" alt=""></span>
                   <p class="nav-name">{{item.name}}</p>
               </div>
@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import { mapActions,mapState } from 'vuex'
+import { toggleModal } from '../utils/tools'
 export default {
 name:'navgatior',
   props:{
@@ -19,10 +21,40 @@ name:'navgatior',
           type:Array
       }
   },
+  computed:{
+    ...mapState({
+         userInfo:state=>state.user.userInfo
+      }),
+  },
+  created(){
+     this.req_getUser(data=>{
+        if(data.state!==200&&data.state!==700004){
+              toggleModal(data.message);
+        }else if(data.state===700004){
+            toggleModal(data.message);
+            setTimeout(()=>{
+                this.$router.push('/login');
+            },1000);
+        }
+    })
+  },
   methods: {
-      skipTo(path){
+    ...mapActions({
+       req_getUser:'user/req_getUser'
+    }),
+    skipTo(path,needVolun){
+      const { isvolunteer} =this.userInfo;
+      if(needVolun){
+        if(isvolunteer==1){
           this.$router.push(path)
+        }else{
+          toggleModal('志愿者方可进行此操作~');
+        }
+      }else{
+        this.$router.push(path);
       }
+          
+    }
   }
 }
 

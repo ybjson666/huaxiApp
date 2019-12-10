@@ -1,68 +1,72 @@
 <template>
-    <div class='actvInfo-container'>
-        <head-bar title="活动详情"/>
+    <div class='actvInfo-container' v-cloak>
+        <div class="header-container">
+            <head-bar title="招募活动详情"/>
+        </div>
         <div class="actvInfo-contents">
-            <div class="actv-pic"><img :src="actvInfo.cover" alt=""></div>
-            <div class="title-wraps">
-                <h2 class="titles">{{actvInfo.activityname}}</h2>
-                <div class="type-wraps" v-if="actvInfo.state">
-                    <p class="types red" v-if="actvInfo.state=='1'">招募中</p>
-                    <p class="types orange" v-if="actvInfo.state=='2'">进行中</p>
-                    <p class="types gray" v-if="actvInfo.state=='3'">未开始</p>
-                </div>
-            </div>
-            <div class="activInfo-contents-wraps">
-                <div class="section section-one block">
-                    <div class="section-title">
-                        <span class="section-icon"><img src="../assets/images/activity_details.png" alt=""></span>
-                        <span>活动详情</span>
-                    </div>
-                    <div class="section-content">
-                        <div class="rows">
-                            <div class="row-icon addr-icon"><img src="../assets/images/activity_address.png" alt=""></div>
-                            <div class="row-info">
-                                <p class="row-line">{{actvInfo.address}}</p>
-                            </div>
-                        </div>
-                        <div class="rows">
-                            <div class="row-icon time-icon"><img src="../assets/images/activity_time.png" alt=""></div>
-                            <div class="row-info">
-                                <p class="row-line">招募开始：{{actvInfo.recruitstarttime}}</p>
-                                <p class="row-line">招募结束：{{actvInfo.recruitendtime}}</p>
-                                <p class="row-line">活动开始：{{actvInfo.activitystarttime}}</p>
-                                <p class="row-line">活动结束：{{actvInfo.activityendtime}}</p>
-                            </div>
-                        </div>
-                        <div class="rows">
-                            <div class="row-icon serv-icon"><img src="../assets/images/activity_type.png" alt=""></div>
-                            <div class="row-info">
-                                <p class="row-line">服务类型：{{servAreaName}}</p>
-                            </div>
-                        </div>
-                        <div class="rows">
-                            <div class="row-icon num-icon"><img src="../assets/images/activity_number.png" alt=""></div>
-                            <div class="row-info">
-                                <p class="row-line" v-if="actvInfo.recruitcount==0">志愿者人数：{{actvInfo.hascount}} / 不限制</p>
-                                <p class="row-line" v-else>{{actvInfo.hascount}} / {{actvInfo.recruitcount}} 人</p>
-                            </div>
-                        </div>
-                        <!-- <div class="rows">
-                            <div class="row-icon"><img src="../assets/images/activity_location.png" alt=""></div>
-                            <div class="row-info">
-                                <p class="row-line">{{actvInfo.address}}</p>
-                            </div>
-                        </div> -->
+            <div class="contents-wraps">
+                <div class="actv-pic"><img :src="actvInfo.cover" alt=""></div>
+                <div class="title-wraps" :style="{top:`${titleTop}rem`}">
+                    <h2 class="titles">{{actvInfo.activityname}}</h2>
+                    <div class="type-wraps" v-if="actvInfo.state">
+                        <p class="types red" v-if="actvInfo.state=='1'">招募中</p>
+                        <p class="types orange" v-if="actvInfo.state=='2'">进行中</p>
+                        <p class="types gray" v-if="actvInfo.state=='3'">未开始</p>
                     </div>
                 </div>
-                <div class="section section-two block">
-                    <div class="section-title">
-                        <span class="section-icon"><img src="../assets/images/activity_details.png" alt=""></span>
-                        <span>活动介绍</span>
+                <div class="activInfo-contents-wraps">
+                    <div class="section section-one block">
+                        <div class="section-title">
+                            <span class="section-icon"><img src="../assets/images/activity_details.png" alt=""></span>
+                            <span>活动详情</span>
+                        </div>
+                        <div class="section-content">
+                            <div class="rows">
+                                <div class="row-icon addr-icon"><img src="../assets/images/activity_address.png" alt=""></div>
+                                <div class="row-info">
+                                    <p class="row-line">{{actvInfo.address}}</p>
+                                </div>
+                            </div>
+                            <div class="rows">
+                                <div class="row-icon time-icon"><img src="../assets/images/activity_time.png" alt=""></div>
+                                <div class="row-info">
+                                    <p class="row-line">招募开始：{{actvInfo.recruitstarttime}}</p>
+                                    <p class="row-line">招募结束：{{actvInfo.recruitendtime}}</p>
+                                    <p class="row-line">活动开始：{{actvInfo.activitystarttime}}</p>
+                                    <p class="row-line">活动结束：{{actvInfo.activityendtime}}</p>
+                                </div>
+                            </div>
+                            <div class="rows">
+                                <div class="row-icon serv-icon"><img src="../assets/images/activity_type.png" alt=""></div>
+                                <div class="row-info">
+                                    <p class="row-line">服务类型：{{servAreaName}}</p>
+                                </div>
+                            </div>
+                            <div class="rows">
+                                <div class="row-icon num-icon"><img src="../assets/images/activity_number.png" alt=""></div>
+                                <div class="row-info">
+                                    <p class="row-line" v-if="actvInfo.recruitcount==0">志愿者人数：{{actvInfo.hascount}} / 不限制</p>
+                                    <p class="row-line" v-else>{{actvInfo.hascount}} / {{actvInfo.recruitcount}} 人</p>
+                                </div>
+                            </div>
+                            <!-- <div class="rows">
+                                <div class="row-icon"><img src="../assets/images/activity_location.png" alt=""></div>
+                                <div class="row-info">
+                                    <p class="row-line">{{actvInfo.address}}</p>
+                                </div>
+                            </div> -->
+                        </div>
                     </div>
-                    <div class="actv-intros" v-html="actvInfo.activitydesc"></div>
+                    <div class="section section-two block">
+                        <div class="section-title">
+                            <span class="section-icon"><img src="../assets/images/activity_Introduction.png" alt=""></span>
+                            <span>活动介绍</span>
+                        </div>
+                        <div class="actv-intros" v-html="actvInfo.activitydesc"></div>
+                    </div>
+                    <!-- <div class="apply-btn btn" @click="apply" v-show="actvInfo.isApply==0">发起报名</div> -->
+                    <div class="apply-btn btn" @click="apply" v-show="actvInfo.state=='1'&&userInfo.isvolunteer==1">发起报名</div>
                 </div>
-                <!-- <div class="apply-btn btn" @click="apply" v-show="actvInfo.isApply==0">发起报名</div> -->
-                <div class="apply-btn btn" @click="apply">发起报名</div>
             </div>
             <Loading v-show="isLoading"/>
         </div>
@@ -93,6 +97,9 @@ name:'actvInfo',
           serviceTypes:state=>state.user.serviceTypes,
           userInfo:state=>state.user.userInfo
       }),
+      titleTop(){
+         return this.actvInfo.activityname&&this.actvInfo.activityname.length>21?7:7.5
+      },
       //分开写法
     //   ...mapState('user',['serviceTypes']),
     //   ...mapState('volunteer',['actvInfo']),
@@ -107,45 +114,57 @@ name:'actvInfo',
         }
   },
   created(){
-        this.actvId=this.$route.params.actvId;
+    this.actvId=this.$route.params.actvId;
         let customerid=localStorage.getItem('customerid')
         this.req_getServices((data)=>{
-            if(data.state!==200){
-                toggleModal(data.message);
-            }
-        })
-        this.req_actvInfo([this.actvId,customerid,data=>{
-            this.isLoading=false;
-            if(data.state!==200){
-                toggleModal(data.message);
-            }
-        }])
+        if(data.state!==200){
+            toggleModal(data.message);
+        }
+    })
+    this.req_actvInfo([this.actvId,customerid,data=>{
+        this.isLoading=false;
+        if(data.state!==200){
+            toggleModal(data.message);
+        }
+    }])
+    this.req_getUser(data=>{
+        if(data.state!==200&&data.state!==700004){
+              toggleModal(data.message);
+        }else if(data.state===700004){
+            toggleModal(data.message);
+            setTimeout(()=>{
+                this.$router.push('/login');
+            },1000);
+        }
+    })
       
   },
-  beforeRouteEnter (to, from, next) {
-    if(to.meta.lastPath!=to.path){
-        to.meta.keepAlive=false;
-        to.meta.lastPath=to.path;
-    }else{
-        to.meta.keepAlive=true;
-    }
-    next();
-  },
+  // beforeRouteEnter (to, from, next) {//页面闪烁体验不好
+  //   if(to.meta.lastPath!=to.path){
+  //       to.meta.keepAlive=false;
+  //       to.meta.lastPath=to.path;
+  //   }else{
+  //       to.meta.keepAlive=true;
+  //   }
+  //   next();
+  // },
   methods:{
       ...mapActions({
           req_actvInfo:'volunteer/req_actvInfo',
-          req_getServices:'user/req_getServices'
+          req_getServices:'user/req_getServices',
+          req_getUser:'user/req_getUser'
       }),
       //分开写法
     //   ...mapActions('volunteer',['req_actvInfo']),
     //   ...mapActions('user',['req_getServices']),
       apply(){
-          const { isvolunteer} =this.userInfo;
-          if(isvolunteer==0){
-              toggleModal('必须先成为志愿者才能报名~');
-              return;
-          }
-           this.$router.push(`/apply/${this.actvId}/${this.actvInfo.activityname}`);
+        const { isvolunteer} =this.userInfo;
+
+        if(isvolunteer==0){
+          toggleModal('志愿者方可进行此操作~');
+          return;
+        }
+        this.$router.push(`/apply/${this.actvId}/${this.actvInfo.activityname}`);
       }
   }
 }
@@ -154,12 +173,20 @@ name:'actvInfo',
 <style lang='scss' scoped>
 .actvInfo-container{
     height: 100%;
+    .header-container{
+        height: 2rem;
+        position: fixed;
+        z-index: 50;
+        width: 100%;
+        left: 0;
+        top:0;
+    }
     .actvInfo-contents{
-        height: calc(100% - 2.5rem);
-        overflow-y: scroll;
+        height:100%;
         background: #f0f0f0;
         position: relative;
-        -webkit-overflow-scrolling: touch;
+        padding-top: 2rem;
+        box-sizing: border-box;
         .actv-pic{
             height: 9rem;
             img{
@@ -172,7 +199,6 @@ name:'actvInfo',
             left: 50%;
             margin-left: -8.75rem;
             padding: .8rem 0;
-            top: 8rem;
             background: #fff;
             border:  1px solid#f0f0f0;
             box-sizing: border-box;
@@ -180,7 +206,6 @@ name:'actvInfo',
                 text-align: center;
                 font-size: .8rem;
                 color: #000;
-                font-weight: normal;
                 margin-bottom: .5rem;
             }
             p{

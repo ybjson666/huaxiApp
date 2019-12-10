@@ -2,61 +2,63 @@
     <div class='desire-container'>
         <head-bar title="心愿活动" :showBack="showBack"/>
         <div class="desire-contents">
-            <div class="top-bar"></div>
-            <div class="navgitors block">
-                <Navgitor :dataSource="dataSource"/>
-            </div>
-            <div class="actv-block">
-                <div class="block-head block">
-                    <Captions captionTxt="投票活动"/>
+            <div class="contents-wraps">
+                <div class="top-bar"></div>
+                <div class="navgitors block">
+                    <Navgitor :dataSource="dataSource"/>
                 </div>
-                <div class="actv-wraps block">
-                    <div class="actv-pic">
-                        <img :src="actviity.pic" alt="">
-                        <div class="shades">
-                            <h2>{{actviity.title}}</h2>
-                            <p>{{actviity.add_time}}</p>
-                            <div><span>查看详情<img src="../assets/images/into2.png"/></span></div>
-                        </div>
+                <div class="actv-block">
+                    <div class="block-head block">
+                        <Captions captionTxt="投票活动"/>
                     </div>
-                    <div class="seek-more" @click="seekMore('vote')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""/></span></div> 
-                </div>
-            </div>
-            <div class="desire-block">
-                <Captions captionTxt="心愿列表"/>
-                <div class="desire-wraps block">
-                    <div class="desire-info" @click="seekInfo('wish',desire.wishid)" v-for="(desire,index) in wishList" :key="index">
-                        <p class="title">
-                            <img src="../assets/images/wish.png" alt="">
-                            <span>{{desire.title}}</span>
-                        </p>
-                        <div>提交时间：<span>{{desire.starttime}}</span></div>
-                        <span class="type-tags orange" v-if="desire.state=='2'">进行中</span>
-                        <!-- <span class="type-tags gray" v-else-if="desire.state=='3'">未通过</span>
-                        <span class="type-tags gray" v-else-if="desire.state=='4'">已取消</span> -->
-                        <span class="type-tags gray" v-else-if="desire.state=='5'">已完成</span>
-                    </div>
-                    <div class="seek-more" @click="seekMore('desire')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""/></span></div> 
-                </div>
-            </div>
-            <div class="source-block">
-                <Captions captionTxt="资源列表"/>
-                <div class="source-wraps block">
-                    <ul class="source-list">
-                        <li v-for="(item,index) in sourceList" :key="index" @click="seekInfo('source',item.id)">
-                            <div class="li-wraps">
-                                <div class="title">
-                                    <img src="../assets/images/icon.png" alt="">
-                                    <span>{{item.title}}</span>
-                                </div>
-                                <p>资源类型：{{item.source_type}}</p>
-                                <p>开放时间：{{item.open_time}}</p>
-                                <p>资源地址：{{item.addr}}</p>
+                    <div class="actv-wraps block">
+                        <div class="actv-pic">
+                            <img :src="actviity.pic" alt="">
+                            <div class="shades">
+                                <h2>{{actviity.title}}</h2>
+                                <p>{{actviity.add_time}}</p>
+                                <div><span>查看详情<img src="../assets/images/into2.png"/></span></div>
                             </div>
-                            <div class="li-bar"></div>
-                        </li>
-                    </ul>
-                    <div class="seek-more" @click="seekMore('source')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""/></span></div> 
+                        </div>
+                        <div class="seek-more" @click="seekMore('vote')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""/></span></div> 
+                    </div>
+                </div>
+                <div class="desire-block">
+                    <Captions captionTxt="心愿列表"/>
+                    <div class="desire-wraps block">
+                        <div class="desire-info" @click="seekInfo('wish',desire.wishid)" v-for="(desire,index) in wishList" :key="index">
+                            <p class="title">
+                                <img src="../assets/images/wish.png" alt="">
+                                <span>{{desire.title}}</span>
+                            </p>
+                            <div>提交时间：<span>{{desire.starttime}}</span></div>
+                            <span class="type-tags orange" v-if="desire.state=='2'">进行中</span>
+                            <!-- <span class="type-tags gray" v-else-if="desire.state=='3'">未通过</span>
+                            <span class="type-tags gray" v-else-if="desire.state=='4'">已取消</span> -->
+                            <span class="type-tags gray" v-else-if="desire.state=='5'">已完成</span>
+                        </div>
+                        <div class="seek-more" @click="seekMore('desire')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""/></span></div> 
+                    </div>
+                </div>
+                <div class="source-block">
+                    <Captions captionTxt="资源列表"/>
+                    <div class="source-wraps block">
+                        <ul class="source-list">
+                            <li v-for="(item,index) in sourceList" :key="index" @click="seekInfo('source',item.id)">
+                                <div class="li-wraps">
+                                    <div class="title">
+                                        <img src="../assets/images/icon.png" alt="">
+                                        <span>{{item.title}}</span>
+                                    </div>
+                                    <p>资源类型：{{item.source_type}}</p>
+                                    <p>开放时间：{{item.open_time}}</p>
+                                    <p>资源地址：{{item.addr}}</p>
+                                </div>
+                                <div class="li-bar"></div>
+                            </li>
+                        </ul>
+                        <div class="seek-more" @click="seekMore('source')">查看更多<span class="more-icon"><img src="../assets/images/right.png" alt=""/></span></div> 
+                    </div>
                 </div>
             </div>
             <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
@@ -82,12 +84,14 @@ name:'desire',
             {
                 icon:require('../assets/images/release.png'),
                 name:"发布心愿",
-                path:'/publish'
+                path:'/publish',
+                needVolun:true
             },
             {
                 icon:require('../assets/images/appointment2.png'),
                 name:"资源预约",
-                path:'/sourceList'
+                path:'/sourceList',
+                needVolun:true
             }
         ],
         actviity:{
@@ -129,7 +133,7 @@ name:'desire',
       Loading
   },
   created(){
-      this.req_Wish([{isHomePage:'Y',state:0,pageNo:1,pageSize:1},true,data=>{
+    this.req_Wish([{isHomePage:'Y',state:0,pageNo:1,pageSize:1},true,data=>{
             this.isLoading=false;
             if(data.state!==200&&data.state!==700004){
               toggleModal(data.message);
@@ -140,21 +144,17 @@ name:'desire',
                 },1000);
               
             }
-      }])
-  },
-  beforeRouteEnter (to, from, next) {
-    if(from.name=='wishInfo'|| from.name=='sourceInfo'){
-        to.meta.keepAlive=true
-    }else{
-      to.meta.keepAlive=false
-    }
-    next();
+    }])
   },
   computed:{
-      ...mapState('wish',['wishList']),
+      ...mapState({
+         wishList:state=>state.wish.wishList
+      }),
   },
   methods: {
-      ...mapActions('wish',['req_Wish']),
+      ...mapActions({
+            req_Wish:'wish/req_Wish'
+      }),
       seekMore(type){
         switch(type){
             case 'desire':
@@ -189,11 +189,8 @@ name:'desire',
 .desire-container{
     height: 100%;
     .desire-contents{
-        height: calc(100% - 2.5rem);
-        background: #f0f0f0;
-        overflow-y: scroll;
+        height: calc(100% - 2rem);
         position: relative;
-        -webkit-overflow-scrolling: touch;
         .top-bar{
             height: 6rem;
         }

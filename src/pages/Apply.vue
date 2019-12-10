@@ -35,9 +35,6 @@ name:'apply',
   components: {
       HeadBar
   },
-
-  computed:{},
-
   mounted(){
       const { actvId,actvName }=this.$route.params;
       this.id=actvId;
@@ -130,6 +127,7 @@ name:'apply',
             border-radius: 3px;
             outline: none;
             background: #fff;
+            line-height: .8rem;
         }
         .apply-btn{
             margin: 0 auto;

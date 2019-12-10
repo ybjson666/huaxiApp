@@ -34,7 +34,7 @@ name:'mains',
 <style lang='scss' scoped>
 .main-container{
   background: #f5f5f5;
-  height: calc(100% - 3rem);
+  height: calc(100% - 2.8rem);
   overflow: hidden;
   .nav-bars{
     position: fixed;

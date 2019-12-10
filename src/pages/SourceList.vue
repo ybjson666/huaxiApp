@@ -168,7 +168,7 @@ name:'sourceList',
         right: .5rem;
         top:0rem;
         color: #fff;
-        line-height: 2.5rem;
+        line-height: 2rem;
     }
     .sele-bar{
       line-height: 2.5rem;
@@ -184,7 +184,7 @@ name:'sourceList',
       }
     }
     .sourceList-contents{
-        height: calc(100% - 5rem);
+        height: calc(100% - 4.5rem);
         .sourceListWraper{
           height: 100%;
           position: relative;

@@ -1,98 +1,125 @@
 <template>
   <div class='center-container'>
-      <head-bar title="个人中心" :showBack="isShowBack">
-          <span class="sign-icon" @click="goSign" slot="right-btn"><img src="../assets/images/record.png" alt=""></span>
-      </head-bar>
+      <head-bar title="个人中心" :showBack="isShowBack"></head-bar>
       <div class="contents">
-        <div class="user-info-block block">
-            <div class="user-pic-item">
-                <img :src="userInfo.userPic" alt="">
+        <div class="contents-wraps">
+            <div class="user-info-block block">
+                <div class="user-pic-item">
+                    <img :src="userInfo.userPic" alt="">
+                </div>
+                <div class="info-item">
+                    <p>{{userInfo.userNick}}</p>
+                    <span v-if="userInfo.isvolunteer==0" class="common">普通用户</span>
+                    <span class="vip" v-else>志愿者</span>
+                </div>
+                <div class="sign-icon" @click="goSign" v-if="userInfo.state==2">
+                    <img src="../assets/images/signup.png" alt="">
+                    <p>签到</p>
+                </div>
+                <div class="voluntee-item" @click="goVoluntee" v-else>
+                    <span class="book"><img src="../assets/images/application.png" alt=""></span>
+                    <p>申请成为志愿者</p>
+                </div>
+                
             </div>
-            <div class="info-item">
-                <p>{{userInfo.userNick}}</p>
-                <span v-if="userInfo.isvolunteer==0" class="common">普通用户</span>
-                <span class="vip" v-else>志愿者</span>
+            <div class="section-one block">
+                <ul class="item-list">
+                    <li>
+                        <router-link to="/active">
+                            <span class="item-icon"><img src="../assets/images/activities.png" alt=""></span>
+                            <p class="item-name">我的活动</p>
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/wish">
+                            <span class="item-icon"><img src="../assets/images/aspiration.png" alt=""></span>
+                            <p class="item-name">我的心愿</p>
+                        </router-link>
+                    </li>
+                    <!-- <li>
+                        <router-link to="/appoint">
+                            <span class="item-icon"><img src="../assets/images/appointment.png" alt=""></span>
+                            <p class="item-name">我的预约</p>
+                        </router-link>
+                    </li> -->
+                    <li>
+                        <a href="javascript:" @click="showFunc">
+                            <span class="item-icon"><img src="../assets/images/appointment.png" alt=""></span>
+                            <p class="item-name">我的预约</p>
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <div class="voluntee-item" @click="goVoluntee">
-                <span class="book"><img src="../assets/images/application.png" alt=""></span>
-                <p>申请成为志愿者</p>
-            </div>
-        </div>
-        <div class="section-one block">
-            <ul class="item-list">
-                <li>
-                    <router-link to="/active">
-                        <span class="item-icon"><img src="../assets/images/activities.png" alt=""></span>
-                        <p class="item-name">我的活动</p>
-                    </router-link>
-                </li>
-                <li>
-                    <router-link to="/wish">
-                        <span class="item-icon"><img src="../assets/images/aspiration.png" alt=""></span>
-                        <p class="item-name">我的心愿</p>
-                    </router-link>
-                </li>
-                <li>
-                    <router-link to="/appoint">
-                        <span class="item-icon"><img src="../assets/images/appointment.png" alt=""></span>
-                        <p class="item-name">我的预约</p>
-                    </router-link>
-                </li>
-            </ul>
-        </div>
-        <div class="section-two block">
-            <ul class="skip-list">
-                <li>
-                    <router-link to="/message">
-                        <span class="skip-icon fl"><img src="../assets/images/message.png" alt=""></span>
-                        <span class="skip-name fl">消息中心</span>
-                        <span  class="right-icon fr"><img src="../assets/images/into.png" alt=""></span>
+            <div class="section-two block">
+                <ul class="skip-list">
+                    <!-- <li>
+                        <router-link to="/message">
+                            <span class="skip-icon fl"><img src="../assets/images/message.png" alt=""></span>
+                            <span class="skip-name fl">消息中心</span>
+                            <span  class="right-icon fr"><img src="../assets/images/into.png" alt=""></span>
+                            <div class="cl"></div>
+                        </router-link>
+                    </li> -->
+                    <li>
+                        <a href="javascript:" @click="showFunc">
+                            <span class="skip-icon fl"><img src="../assets/images/message.png" alt=""></span>
+                            <span class="skip-name fl">消息中心</span>
+                            <span  class="right-icon fr"><img src="../assets/images/into.png" alt=""></span>
+                            <div class="cl"></div>
+                        </a>
+                    </li>
+                    <li>
+                        <router-link to="/person" >
+                            <span class="skip-icon fl"><img src="../assets/images/information.png" alt=""></span>
+                            <span class="skip-name fl">个人信息</span>
+                            <span class="right-icon fr"><img src="../assets/images/into.png" alt=""></span>
+                            <div class="cl"></div>
+                        </router-link>
+                    </li>
+                    <!-- <li>
+                        <router-link to="/volunTeam">
+                            <span class="skip-icon fl"><img src="../assets/images/team.png" alt=""></span>
+                            <span class="skip-name fl">我的志愿团队</span>
+                            <span  class="right-icon fr"><img src="../assets/images/into.png" alt=""></span>
+                            <div class="cl"></div>
+                        </router-link>
+                    </li> -->
+                     <li>
+                        <a href="javascript:" @click="showFunc">
+                            <span class="skip-icon fl"><img src="../assets/images/team.png" alt=""></span>
+                            <span class="skip-name fl">我的志愿团队</span>
+                            <span  class="right-icon fr"><img src="../assets/images/into.png" alt=""></span>
+                            <div class="cl"></div>
+                        </a>
+                    </li>
+                    <li @click="goShop">
+                        <span class="skip-icon fl"><img src="../assets/images/shopping.png" alt=""></span>
+                        <span class="skip-name fl">积分商城</span>
+                        <span class="right-icon fr" ><img src="../assets/images/into.png" alt=""></span>
+                        <!-- <router-link to="/shop" class="right-icon fr"><img src="../assets/images/into.png" alt=""></router-link> -->
                         <div class="cl"></div>
-                    </router-link>
-                </li>
-                <li>
-                    <router-link to="/person" >
-                        <span class="skip-icon fl"><img src="../assets/images/information.png" alt=""></span>
-                        <span class="skip-name fl">个人信息</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="section-two block section-three">
+              <ul class="skip-list">
+                  <li>
+                      <router-link to="/password">
+                        <span class="skip-icon pwd-icon fl"><img src="../assets/images/revise.png" alt=""></span>
+                        <span class="skip-name fl">更改密码</span>
                         <span class="right-icon fr"><img src="../assets/images/into.png" alt=""></span>
                         <div class="cl"></div>
-                    </router-link>
-                </li>
-                <li>
-                    <router-link to="/volunTeam">
-                        <span class="skip-icon fl"><img src="../assets/images/team.png" alt=""></span>
-                        <span class="skip-name fl">我的志愿团队</span>
-                        <span  class="right-icon fr"><img src="../assets/images/into.png" alt=""></span>
-                        <div class="cl"></div>
-                    </router-link>
-                </li>
-                <li @click="goShop">
-                    <span class="skip-icon fl"><img src="../assets/images/shopping.png" alt=""></span>
-                    <span class="skip-name fl">积分商城</span>
-                    <span class="right-icon fr" ><img src="../assets/images/into.png" alt=""></span>
-                    <!-- <router-link to="/shop" class="right-icon fr"><img src="../assets/images/into.png" alt=""></router-link> -->
-                    <div class="cl"></div>
-                </li>
-            </ul>
+                      </router-link>
+                  </li>
+                  <li @click="loginOut">
+                      <span class="skip-icon fl"><img src="../assets/images/retreat.png" alt=""></span>
+                      <span class="skip-name fl">退出登录</span>
+                      <span class="right-icon fr" ><img src="../assets/images/into.png" alt=""></span>
+                      <div class="cl"></div>
+                  </li>
+              </ul>
+           </div>
         </div>
-        <div class="section-two block section-three">
-          <ul class="skip-list">
-              <li>
-                  <router-link to="/password">
-                    <span class="skip-icon pwd-icon fl"><img src="../assets/images/revise.png" alt=""></span>
-                    <span class="skip-name fl">更改密码</span>
-                    <span class="right-icon fr"><img src="../assets/images/into.png" alt=""></span>
-                    <div class="cl"></div>
-                  </router-link>
-              </li>
-              <li @click="loginOut">
-                  <span class="skip-icon fl"><img src="../assets/images/retreat.png" alt=""></span>
-                  <span class="skip-name fl">退出登录</span>
-                  <span class="right-icon fr" ><img src="../assets/images/into.png" alt=""></span>
-                  <div class="cl"></div>
-              </li>
-          </ul>
-       </div>
        <Loading v-show="isLoading"><span slot="contents" class="load-txt">数据加载中...</span></Loading>
     </div>
   </div>
@@ -125,7 +152,12 @@ name:'center',
   methods: {
       ...mapActions('user',['req_getUser']),
       goVoluntee(){
-          this.$router.push('/aplyVolunte')
+          if(this.userInfo.state==1){
+              toggleModal('正在申请中...')
+          }else{
+            this.$router.push('/aplyVolunte')
+          }
+          
       },
       goSign(){
           this.$router.push('/sign')
@@ -136,6 +168,9 @@ name:'center',
       },
       goShop(){
           window.location.href=this.shopUrl;
+      },
+      showFunc(){
+          toggleModal('功能开发中...')
       }
   },
   created() {
@@ -171,22 +206,14 @@ name:'center',
 <style lang='scss' scoped>
     .center-container{
         height: 100%;
-        .sign-icon{
-            display: block;
-            position: absolute;
-            width: 1rem;
-            right: .75rem;
-            top:.7rem;
-        }
         .contents{
-            height:calc(100% - 2.5rem);
-            overflow-y: scroll;
-            box-sizing: border-box;
-            -webkit-overflow-scrolling: touch;
+            height:calc(100% - 2rem);
+            position:relative;
             .user-info-block{
                 display: flex;
                 padding: 1rem .5rem;
                 box-sizing: border-box;
+                position: relative;
                 .user-pic-item{
                     width: 3.9rem;
                     height: 3.9rem;
@@ -195,6 +222,9 @@ name:'center',
                     margin-right: .85rem;
                     box-sizing: border-box;
                     margin-left: .25rem;
+                    img{
+                        height: 100%;
+                    }
                 }
                 .info-item{
                     padding-top: .3rem;
@@ -236,6 +266,20 @@ name:'center',
                     }
                     p{
                         color: rgb(26,26,26);
+                        font-size: .7rem;
+                    }
+                }
+                .sign-icon{
+                    position: absolute;
+                    width: 2rem;
+                    right: 2.5rem;
+                    top:1.3rem;
+                    text-align: center;
+                    img{
+                        width: 1.3rem;
+                    }
+                    p{
+                        text-align: center;
                         font-size: .7rem;
                     }
                 }

@@ -1,174 +1,77 @@
 <template>
-  <div class='datapicker fade' v-show="show">
-      <div class="picker-wraps slideInUp">
-          <div class="picker-bar">
-              <span class="cancel-btn" @click="closeFrame">取消</span>
-              <h2 class="picker-title">{{title}}</h2>
-              <span class="sure-btn " @click="sureSele">确定</span>
-          </div>
-          <div class="picker-content">
-              <div class="picker-wraper" ref="picker">
-                  <ul class="data-list" ref="list">
-                      <li v-for="(item,index) in dataSource" :key="index" :class="{choose:curIndex===index}" @click="seleItem(item,index)">
-                          <span>{{item.dictionaryValue}}</span>
-                      </li>
-                  </ul>
-              </div>
-          </div>
-      </div>
-  </div>
+    <div class='picker-container'>
+        <mt-popup
+            v-model="show"
+            position="bottom"
+            popup-transition="popup-fade"
+            class="popuer"
+            :closeOnClickModal="false"
+        >
+          <mt-picker 
+            :slots="slots" 
+            @change="onValuesChange" 
+            :showToolbar="true"
+            >
+            <div class="picker-title-bar">
+                <span class="cancel-btn" @click="closeFrame">取消</span>
+                <h2 class="picker-title">{{title}}</h2>
+                <span class="sure-btn" @click="sureChoose">确定</span>
+            </div>
+            </mt-picker>
+        </mt-popup>
+    </div>
 </template>
 
 <script>
-import BScroll from 'better-scroll';
+import { Picker, Popup } from 'mint-ui';
 export default {
-    name:'dataPicker',
-    data(){
-        return{
-            curIndex:null,
-            choose:""
-        }
+name:'pickers',
+    data () {
+        return {
+          seleId:""
+        };
     },
     props:{
-        show:Boolean,
-        dataSource:Array,
-        title:String
+        dataSource:{
+            type:Array,
+            default:[]
+        },
+        title:String,
+        show:{
+            type:Boolean,
+            default:false
+        }
     },
-    watch:{
-        show(){
-            setTimeout(()=>{
-                this._initScroll();
-            },200)
+    computed:{
+        slots(){
+            let arr=[
+                {
+                    flex:1,
+                    values:[],
+                    className: 'slot1',
+                    textAlign: 'center'
+                }
+            ];
+            arr[0].values=this.dataSource.map(item=>(item.dictionaryValue))
+            return arr;
         }
     },
     methods: {
         closeFrame(){
             this.$emit('closeFrame');
-            this.curIndex=null;
-            this.choose="";
         },
-        seleItem(item,index){
-            this.curIndex=index;
-            this.choose=item;
+        onValuesChange(picker, values){
+           this.dataSource.forEach(item=>{
+               if(item.dictionaryValue==values[0]){
+                   this.seleId=item.dictionaryId;
+                   return;
+               }
+           })
         },
-        sureSele(){
-            this.$emit('chooseItem',this.choose);
-            this.curIndex=null;
-            this.choose="";
-        },
-        _initScroll(){
-            if(!this.scroll){
-                this.scroll=new BScroll(this.$refs.picker,{
-                    click:true,
-                    probeType: 3,
-                    tap:true
-                })
-            }
-        }
+        sureChoose(){
+            this.$emit('chooseItem',this.seleId)
+        } 
     }
 }
 
 </script>
-<style lang='scss' scoped>
-.slideInUp {
-  animation: slideInUp .3s;
-}
-
-@keyframes slideInUp {
-  from {
-    transform: translate3d(0, 100%, 0)
-  }
-  to {
-    transform: translate3d(0, 0, 0)
-  }
-}
-.fade{
-    animation: fade .3s;
-}
-@keyframes fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-.datapicker{
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    top:0;
-    left: 0;
-    background: rgba(0,0,0,.5);
-    z-index: 30;
-    .picker-wraps{
-        position: absolute;
-        height: 15rem;
-        width: 100%;
-        background: #fff;
-        left: 0;
-        bottom: 0;
-        .picker-bar{
-            height: 3rem;
-            // background: #f5f5f5;
-            // border-bottom:1px solid #ccc;
-            box-sizing: border-box;
-            padding: 0 .5rem;
-            font-size: .75rem;
-            line-height: 3rem;
-            position: relative;
-            span{
-                display: block;
-                line-height: 3rem;
-                position: absolute;
-                top:0;
-                height: 3rem;
-            }
-            h2{
-                text-align: center;
-                line-height: 3rem;
-                font-size: .8rem;
-                color: #000;
-            }
-            .cancel-btn{
-                color: #666;
-                left: .5rem;
-            }
-            .sure-btn{
-                color: #f39c1c;
-                right: .5rem;
-            }
-        }
-    }
-    .picker-content{
-        position: relative;
-        height: calc(100% - 2rem);
-        .picker-wraper{
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            left: 0;
-            top: 0;
-            overflow: hidden;
-            .data-list{
-                padding: .5rem;
-                box-sizing: border-box;
-                li{
-                    line-height: 1.8rem;
-                    text-align: center;
-                    color: #666;
-                    font-size: .75rem;
-                    border-bottom: 1px solid #ccc;
-                    box-sizing: border-box;
-                    &:last-child{
-                        border:none;
-                    }
-                    &.choose{
-                        color: #26a2ff;
-                    }
-                }
-            }
-        }
-    }
-}
-</style>

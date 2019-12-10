@@ -29,7 +29,7 @@
                   <img :src="item.cover" alt="">
                 </div>
                 <div class="hunger-infos">
-                  <h2>{{item.activityname | curtWords(9)}}</h2>
+                  <h2>{{item.activityname | curtWords(20)}}</h2>
                   <div class="hunger-bottom">
                       <p>
                         <span class="row-icon time-icon"><img src="../assets/images/time.png" alt=""></span>
@@ -163,7 +163,7 @@ name:'recruit',
         this.sort=1;
         this.$refs.sorts.style='transform:rotate(180deg)';
       }else{
-         this.sort=0;
+        this.sort=0;
         this.$refs.sorts.style='transform:rotate(0deg)';
       }
       this.pageNo=1;
@@ -176,9 +176,11 @@ name:'recruit',
     },
     closeFrame(){
       this.seekServArea=false;
+      this.$refs.down.style='transform:rotate(0deg)'
     },
     chooseServArea(item){
       this.seekServArea=false;
+      this.$refs.down.style='transform:rotate(0deg)'
       this.areaId=item.dictionaryId;
       this.pageNo=1;
       this.isAll='N';
@@ -210,7 +212,7 @@ name:'recruit',
       }
     }
     .recruit-contents{
-      height: calc(100% - 5rem);
+      height: calc(100% - 4.5rem);
       .recruit-wraper{
         height: 100%;
         position: relative;
@@ -237,15 +239,15 @@ name:'recruit',
                 box-sizing: border-box;
               }
               .red{
-                background: url('../assets/images/bg2.png') no-repeat;
+                background: url('../assets/images/bg4.png') no-repeat;
                 background-size: 100% 100%;
               }
               .orange{
-                background: url('../assets/images/bg3.png')no-repeat;
+                background: url('../assets/images/bg2.png')no-repeat;
                 background-size: 100% 100%;
               }
               .gray{
-                background: url('../assets/images/bg4.png')no-repeat;
+                background: url('../assets/images/bg3.png')no-repeat;
                 background-size: 100% 100%;
               }
               .hunger-pic{
@@ -261,7 +263,7 @@ name:'recruit',
                 position: relative;
                 h2{
                   font-size: .85rem;
-                  font-weight: normal;
+                  margin-top: -.17rem;
                 }
                 .hunger-bottom{
                   position: absolute;
@@ -270,27 +272,27 @@ name:'recruit',
                   bottom: 0;
                   color: rgb(128,128,128);
                   font-size: .65rem;
+                  margin-bottom: -.2rem;
                     p{
-                      font-size: .6rem;
-                      margin-bottom: .2rem;
+                      font-size: .65rem;
+                      margin-bottom: .05rem;
                       color: rgb(127,127,127);
                       &:last-child{
                         margin: 0;
                       }
                       .row-icon{
                         display: inline-block;
-                        width: .6rem;
                         margin-right: .3rem;
                         vertical-align: middle;
                       }
                       .time-icon{
-                          width: .7rem;
+                        width: .6rem;
                       }
                       .user-icon{
-                        width: .8rem;
+                        width: .7rem;
                       }
                       .addr-icon{
-                        width: .6rem;
+                        width: .55rem;
                       }
                     }
                   }
